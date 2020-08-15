@@ -1,18 +1,20 @@
-FROM ubuntu:18.04
+FROM ubuntu:20.04
 ARG STEL_VERSION="0.20.2"
 WORKDIR /opt/stellarium
 
-RUN DEBIAN_FRONTEND="noninteractive" apt-get update && apt-get install -y wget xvfb
+RUN DEBIAN_FRONTEND="noninteractive" apt-get update && apt-get install -y wget xvfb libglib2.0-0 libxcb-xinerama0 libfontconfig1 dbus
 
 RUN wget -q \
-"https://github.com/Stellarium/stellarium/releases/download/v$STEL_VERSION/Stellarium-$STEL_VERSION-x86_64.AppImage" \
--O ./stellarium.appimage
-RUN chmod +x ./stellarium.appimage
-RUN ./stellarium.appimage --appimage-extract
-RUN cp -r ./squashfs-root/* /
+    "https://github.com/Stellarium/stellarium/releases/download/v$STEL_VERSION/Stellarium-$STEL_VERSION-x86_64.AppImage" \
+    -O ./stellarium.appimage \
+    && chmod +x ./stellarium.appimage \
+    && ./stellarium.appimage --appimage-extract \
+    && cp -r ./squashfs-root/* / \
+    && rm -rf ./squashfs-root \
+    && ldconfig
 
-COPY config.ini ./
+COPY config.ini .
+COPY start.sh .
 
-EXPOSE 8090
-#CMD ["sleep", "30000"]
-CMD ["/usr/bin/stellarium", "-c", "./config.ini"]
+EXPOSE 8090/tcp
+CMD ["./start.sh"]
