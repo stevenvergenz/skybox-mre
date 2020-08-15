@@ -1,3 +1,4 @@
 root = true
 
+[*.{ts,js}]
 indent_style = tab

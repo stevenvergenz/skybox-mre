@@ -22,7 +22,17 @@ services:
       dockerfile: "./Dockerfile"
     networks:
       - internal
+    volumes:
+      - screenshots:/root/screenshots
     ports:
       - "8090:8090"
+  nginx:
+    image: nginx:alpine
+    volumes:
+      - screenshots:/usr/share/nginx/html
+    ports:
+      - "80:80"
+volumes:
+  screenshots:
 networks:
   internal:

@@ -1,0 +1,28 @@
+{
+  "name": "skybox-mre",
+  "version": "1.0.0",
+  "description": "",
+  "main": "built/index.js",
+  "scripts": {
+    "build": "tsc --build",
+    "start": "node .",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/stevenvergenz/skybox-mre.git"
+  },
+  "author": "",
+  "license": "GPL-3.0",
+  "bugs": {
+    "url": "https://github.com/stevenvergenz/skybox-mre/issues"
+  },
+  "homepage": "https://github.com/stevenvergenz/skybox-mre#readme",
+  "dependencies": {
+    "@microsoft/mixed-reality-extension-sdk": "^0.20.0"
+  },
+  "devDependencies": {
+    "@types/node": "^14.0.27",
+    "typescript": "^3.9.7"
+  }
+}
