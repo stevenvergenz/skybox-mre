@@ -19,10 +19,14 @@
   },
   "homepage": "https://github.com/stevenvergenz/skybox-mre#readme",
   "dependencies": {
-    "@microsoft/mixed-reality-extension-sdk": "^0.20.0"
+    "@microsoft/mixed-reality-extension-sdk": "^0.20.0",
+    "node-fetch": "^2.6.0",
+    "restify": "^8.5.1"
   },
   "devDependencies": {
     "@types/node": "^14.0.27",
+    "@types/node-fetch": "^2.5.7",
+    "@types/restify": "^8.4.2",
     "typescript": "^3.9.7"
   }
 }

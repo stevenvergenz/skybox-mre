@@ -1,0 +1,31 @@
+import fetch from 'node-fetch';
+
+const stel_url = process.env.STEL_URL || 'http://localhost:8090/';
+
+/** Take screenshot:
+POST http://localhost:8090/api/stelaction/do?id=actionSave_Screenshot_Global
+
+Toggle UI:
+POST http://localhost:8090/api/stelaction/do?id=actionToggle_GuiHidden_Global
+returns new state
+
+Set FOV to 90 degrees
+POST http://localhost:8090/api/main/fov?fov=90
+
+Set view direction (az in radians from south, alt in radians from horizon)
+POST http://localhost:8090/api/main/view?az=3.14&alt=0
+
+Set time (in fractional Julian Days in UTC)
+POST http://localhost:8090/api/main/time?time=2459076.26
+
+Set location (lat deg N, long deg E, alt meters)
+POST http://localhost:8090/api/location/setlocationfields?latitude=47&longitude=-122&altitude=1000&planet=earth
+
+Set light pollution level
+POST http://localhost:8090/api/stelproperty/set?id=StelSkyDrawer.bortleScaleIndex&value=2
+*/
+
+export async function takeScreenshot(): Promise<string> {
+	await fetch(stel_url+'api/stelaction/do?id=actionSave_Screenshot_Global', { method: 'POST'});
+	
+}

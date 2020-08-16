@@ -1,21 +1,19 @@
 version: "3"
 services:
-  #www:
-  #  volumes:
-  #    - /opt/app/:/opt/app/
-  #  ports:
-  #    - "3901:3901"
-  #  environment:
-  #    PGHOST: db
-  #    PGUSER: postgres
-  #    PGPASSWORD: postgres
-  #    PGDATABASE: rp-badges
-  #  build:
-  #    context: .
-  #  networks:
-  #    - internal
-  #  depends_on:
-  #    - "db"
+  mre:
+    volumes:
+      - screenshots:/screenshots
+    ports:
+      - "3901:3901"
+    build:
+      context: .
+    environment:
+      STEL_URL: http://stellarium:8090/
+      STEL_OUTDIR: /screenshots/
+    networks:
+      - internal
+    depends_on:
+      - "stellarium"
   stellarium:
     build:
       context: ./skybox-stellarium/
@@ -24,8 +22,6 @@ services:
       - internal
     volumes:
       - screenshots:/root/screenshots
-    ports:
-      - "8090:8090"
   nginx:
     image: nginx:alpine
     volumes:
