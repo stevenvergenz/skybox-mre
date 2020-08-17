@@ -1,31 +1,121 @@
+import { resolve } from 'path';
+import { rename as cbRename } from 'fs';
+import { promisify } from 'util';
+const rename = promisify(cbRename);
+import { toJulianDay } from 'julian';
 import fetch from 'node-fetch';
 
-const stel_url = process.env.STEL_URL || 'http://localhost:8090/';
+import { Location } from './location';
 
-/** Take screenshot:
-POST http://localhost:8090/api/stelaction/do?id=actionSave_Screenshot_Global
+export type CubeFace
+	= 'n'
+	| 's'
+	| 'e'
+	| 'w'
+	| 'u'
+	| 'd';
 
-Toggle UI:
-POST http://localhost:8090/api/stelaction/do?id=actionToggle_GuiHidden_Global
-returns new state
+export type Cube = { [face: string]: string };
 
-Set FOV to 90 degrees
-POST http://localhost:8090/api/main/fov?fov=90
+const stelUrl = process.env.STEL_URL ?? 'http://localhost:8090/';
+const stelOutdir = process.env.STEL_OUTDIR ?? resolve(__dirname, "./screenshots");
+let stelReady: Promise<Cube> = setup();
 
-Set view direction (az in radians from south, alt in radians from horizon)
-POST http://localhost:8090/api/main/view?az=3.14&alt=0
+async function setup() {
+	await setFOV(60);
+	const isShowing = await toggleUI();
+	if (isShowing) {
+		await toggleUI();
+	}
+	return null as Cube;
+}
 
-Set time (in fractional Julian Days in UTC)
-POST http://localhost:8090/api/main/time?time=2459076.26
+/** @returns The URL to the screenshot */
+export function takeSkybox(place: Location, time: Date, outName: string) {
+	return stelReady = stelReady.then(() => _takeSkybox(place, time, outName));
+}
 
-Set location (lat deg N, long deg E, alt meters)
-POST http://localhost:8090/api/location/setlocationfields?latitude=47&longitude=-122&altitude=1000&planet=earth
+async function _takeSkybox(place: Location, time: Date, outName: string) {
+	return {} as Cube;
+}
 
-Set light pollution level
-POST http://localhost:8090/api/stelproperty/set?id=StelSkyDrawer.bortleScaleIndex&value=2
-*/
+async function takeScreenshot(place: Location, time: Date, direction: CubeFace, outName: string): Promise<string> {
+	const result = await fetch(`${stelUrl}/api/stelaction/do?id=actionSave_Screenshot_Global`, { method: 'POST'});
+	const text = await result.text();
+	if (text !== 'ok') {
+		throw new Error(text);
+	}
 
-export async function takeScreenshot(): Promise<string> {
-	await fetch(stel_url+'api/stelaction/do?id=actionSave_Screenshot_Global', { method: 'POST'});
-	
+	const outfile = resolve(stelOutdir, outName + '.png');
+	await rename(resolve(stelOutdir, 'stellarium-000.png'), outfile);
+	return `/skies/${outName}`;
+}
+
+async function toggleUI() {
+	const result = await fetch(`${stelUrl}/api/stelaction/do?id=actionToggle_GuiHidden_Global`, { method: 'POST' });
+	return (await result.text()) === 'true';
+}
+
+async function setFOV(fov: number) {
+	const result = await fetch(`${stelUrl}/api/main/fov?fov=${fov}`, { method: 'POST' });
+	const text = await result.text();
+	if (text !== 'ok') {
+		throw new Error(text);
+	}
+}
+
+async function setDirection(direction: CubeFace) {
+	let azumith = 0, altitude = 0;
+	switch (direction) {
+		case 'n':
+			azumith = Math.PI;
+			break;
+		case 'e':
+			azumith = 0.5 * Math.PI;
+			break;
+		case 'w':
+			azumith = 1.5 * Math.PI;
+			break;
+		case 'u':
+			altitude = 0.5 * Math.PI;
+			break;
+		case 'd':
+			altitude = 1.5 * Math.PI;
+			break;
+	}
+
+	const result = await fetch(`${stelUrl}/api/main/view?az=${azumith}&alt=${altitude}`, { method: 'POST' });
+	const text = await result.text();
+	if (text !== 'ok') {
+		throw new Error(text);
+	}
+}
+
+async function setTime(time: Date) {
+	const julianDay = toJulianDay(time);
+	const result = await fetch(`${stelUrl}/api/main/time?time=${julianDay}`, { method: 'POST' });
+	const text = await result.text();
+	if (text !== 'ok') {
+		throw new Error(text);
+	}
+}
+
+async function setLocation(place: Location) {
+	const result = await fetch(`${stelUrl}/api/location/setlocationfields`
+		+ `?latitude=${place.latitude}&longitude=${place.longitude}&altitude=${place.altitude}&planet=${place.planet}`,
+		{ method: 'POST' });
+	const text = await result.text();
+	if (text !== 'ok') {
+		throw new Error(text);
+	}
+}
+
+async function setLightPollution(bortleScaleIndex: number) {
+	const result = await fetch(
+		`${stelUrl}/api/stelproperty/set?id=StelSkyDrawer.bortleScaleIndex&value=${bortleScaleIndex}`,
+		{ method: 'POST' });
+	const text = await result.text();
+	if (text !== 'ok') {
+		throw new Error(text);
+	}
 }

@@ -1,6 +1,6 @@
 {
   "include": [
-    "./src"
+    "./src", "./types"
   ],
   "compilerOptions": {
     "outDir": "./built",
@@ -17,6 +17,7 @@
     "composite": true,
     "strict": true,
     "strictNullChecks": false,
-    "moduleResolution": "node"
+    "moduleResolution": "node",
+    "typeRoots": ["./types"]
   }
 }
