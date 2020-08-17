@@ -22,12 +22,37 @@ const stelOutdir = process.env.STEL_OUTDIR ?? resolve(__dirname, "./screenshots"
 let stelReady: Promise<Cube> = setup();
 
 async function setup() {
-	await setFOV(60);
+	// wait for startup
+	do {
+		try {
+			const res = await fetch(`${stelUrl}/api/main/status`);
+			if (res.ok) {
+				break;
+			} else {
+				console.log(res);
+				await sleep(2000);
+			}
+		} catch (e) {
+			console.log(e);
+			await sleep(2000);
+		}
+	} while(1);
+
+	console.log('Stellarium found, initializing');
+
+	// set initial props
+	await setFOV(90);
 	const isShowing = await toggleUI();
 	if (isShowing) {
 		await toggleUI();
 	}
 	return null as Cube;
+}
+
+function sleep(duration: number) {
+	return new Promise((resolve, reject) => {
+		setTimeout(resolve, duration);
+	});
 }
 
 /** @returns The URL to the screenshot */
@@ -36,10 +61,34 @@ export function takeSkybox(place: Location, time: Date, outName: string) {
 }
 
 async function _takeSkybox(place: Location, time: Date, outName: string) {
-	return {} as Cube;
+	await setLocation(place);
+	await setTime(time, 0);
+
+	await setDirection('n');
+	const north = await takeScreenshot(outName + '-n');
+
+	await setDirection('e');
+	const east = await takeScreenshot(outName + '-e');
+
+	await setDirection('s');
+	const south = await takeScreenshot(outName + '-s');
+
+	await setDirection('w');
+	const west = await takeScreenshot(outName + '-w');
+
+	await setDirection('u');
+	const up = await takeScreenshot(outName + '-u');
+
+	return {
+		n: north,
+		e: east,
+		s: south,
+		w: west,
+		u: up
+	} as Cube;
 }
 
-async function takeScreenshot(place: Location, time: Date, direction: CubeFace, outName: string): Promise<string> {
+async function takeScreenshot(outName: string): Promise<string> {
 	const result = await fetch(`${stelUrl}/api/stelaction/do?id=actionSave_Screenshot_Global`, { method: 'POST'});
 	const text = await result.text();
 	if (text !== 'ok') {
@@ -91,9 +140,9 @@ async function setDirection(direction: CubeFace) {
 	}
 }
 
-async function setTime(time: Date) {
+async function setTime(time: Date, timerate: number) {
 	const julianDay = toJulianDay(time);
-	const result = await fetch(`${stelUrl}/api/main/time?time=${julianDay}`, { method: 'POST' });
+	const result = await fetch(`${stelUrl}/api/main/time?time=${julianDay}&timerate=${timerate}`, { method: 'POST' });
 	const text = await result.text();
 	if (text !== 'ok') {
 		throw new Error(text);
@@ -102,7 +151,10 @@ async function setTime(time: Date) {
 
 async function setLocation(place: Location) {
 	const result = await fetch(`${stelUrl}/api/location/setlocationfields`
-		+ `?latitude=${place.latitude}&longitude=${place.longitude}&altitude=${place.altitude}&planet=${place.planet}`,
+		+ `?latitude=${place.latitude}`
+		+ `&longitude=${place.longitude}`
+		+ `&altitude=${place.altitude ?? 0}`
+		+ `&planet=${place.planet ?? 'earth'}`,
 		{ method: 'POST' });
 	const text = await result.text();
 	if (text !== 'ok') {

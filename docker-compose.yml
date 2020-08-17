@@ -6,9 +6,9 @@ services:
     ports:
       - "3901:3901"
     build:
-      context: .
+      context: ./skybox-mre/
     environment:
-      STEL_URL: http://stellarium:8090/
+      STEL_URL: http://stellarium:8090
       STEL_OUTDIR: /screenshots/
     networks:
       - internal
@@ -17,17 +17,12 @@ services:
   stellarium:
     build:
       context: ./skybox-stellarium/
-      dockerfile: "./Dockerfile"
+    expose:
+      - "8090/tcp"
     networks:
       - internal
     volumes:
       - screenshots:/root/screenshots
-  nginx:
-    image: nginx:alpine
-    volumes:
-      - screenshots:/usr/share/nginx/html
-    ports:
-      - "80:80"
 volumes:
   screenshots:
 networks:

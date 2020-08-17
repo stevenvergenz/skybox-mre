@@ -8,4 +8,4 @@ Xvfb :99 -screen 0 1024x1024x16 -nolisten tcp &
 rm -f /root/screenshots/*
 
 # start stellarium
-DISPLAY=:99 /usr/bin/stellarium -c ./config.ini --screenshot-dir /root/screenshots
+DISPLAY=:99 /usr/bin/stellarium -c ./config.ini --screenshot-dir /root/screenshots >> /dev/null

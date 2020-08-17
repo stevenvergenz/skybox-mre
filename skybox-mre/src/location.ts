@@ -6,6 +6,6 @@ export enum Planet {
 export type Location = {
 	latitude: number;
 	longitude: number;
-	altitude: number;
-	planet: Planet;
+	altitude?: number;
+	planet?: Planet;
 };
