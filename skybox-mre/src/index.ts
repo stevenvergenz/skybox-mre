@@ -15,12 +15,12 @@ Stellarium.takeSkybox(
 );
 
 const server = new MRE.WebHost({
-	baseDir: resolve(__dirname, "./public"),
+	baseDir: resolve(__dirname, "../public"),
 	optionalPermissions: [MRE.Permissions.UserInteraction]
 });
 
-setTimeout(() => {
+/*setTimeout(() => {
 	server.adapter.server.get('/skies/*', Restify.plugins.serveStaticFiles(process.env.STEL_OUTDIR));
-}, 1000);
+}, 1000);*/
 
 server.adapter.onConnection((context, params) => new App(context, params));

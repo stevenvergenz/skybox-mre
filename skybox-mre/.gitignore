@@ -1,3 +1,5 @@
 node_modules
 *.tsbuildinfo
 built
+*.blend1
+*.blend2
