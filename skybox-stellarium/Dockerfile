@@ -19,3 +19,4 @@ COPY start.sh .
 
 EXPOSE 8090/tcp
 CMD ["./start.sh"]
+#CMD sleep 30000

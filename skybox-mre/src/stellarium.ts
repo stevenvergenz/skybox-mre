@@ -22,6 +22,9 @@ const stelOutdir = process.env.STEL_OUTDIR ?? resolve(__dirname, "./screenshots"
 let stelReady: Promise<Cube> = setup();
 
 async function setup() {
+	// give it some time to finish booting
+	// await sleep(10000);
+
 	// wait for startup
 	do {
 		try {
@@ -29,19 +32,19 @@ async function setup() {
 			if (res.ok) {
 				break;
 			} else {
-				console.log(res);
+				console.log("Stellarium status: " + res.statusText);
 				await sleep(2000);
 			}
 		} catch (e) {
-			console.log(e);
+			console.log("Stellarium offline");
 			await sleep(2000);
 		}
 	} while(1);
 
-	console.log('Stellarium found, initializing');
+	console.log("Stellarium found, initializing");
 
 	// set initial props
-	await setFOV(90);
+	await disableLandscape();
 	const isShowing = await toggleUI();
 	if (isShowing) {
 		await toggleUI();
@@ -101,7 +104,23 @@ async function takeScreenshot(outName: string): Promise<string> {
 }
 
 async function toggleUI() {
-	const result = await fetch(`${stelUrl}/api/stelaction/do?id=actionToggle_GuiHidden_Global`, { method: 'POST' });
+	let result = await fetch(
+		`${stelUrl}/api/stelproperty/set?id=NebulaMgr.labelsAmount&value=0`,
+		{ method: 'POST' });
+	let text = await result.text();
+	if (text !== 'ok') {
+		throw new Error(text);
+	}
+	
+	result = await fetch(
+		`${stelUrl}/api/stelproperty/set?id=SolarSystem.labelsDisplayed&value=false`,
+		{ method: 'POST' });
+	text = await result.text();
+	if (text !== 'ok') {
+		throw new Error(text);
+	}
+	
+	result = await fetch(`${stelUrl}/api/stelaction/do?id=actionToggle_GuiHidden_Global`, { method: 'POST' });
 	return (await result.text()) === 'true';
 }
 
@@ -126,10 +145,11 @@ async function setDirection(direction: CubeFace) {
 			azumith = 1.5 * Math.PI;
 			break;
 		case 'u':
-			altitude = 0.5 * Math.PI;
+			// not exactly up to prevent gimbal issues
+			altitude = 0.5 * Math.PI - 0.000001;
 			break;
 		case 'd':
-			altitude = 1.5 * Math.PI;
+			altitude = 1.5 * Math.PI - 0.000001;
 			break;
 	}
 
@@ -167,6 +187,24 @@ async function setLightPollution(bortleScaleIndex: number) {
 		`${stelUrl}/api/stelproperty/set?id=StelSkyDrawer.bortleScaleIndex&value=${bortleScaleIndex}`,
 		{ method: 'POST' });
 	const text = await result.text();
+	if (text !== 'ok') {
+		throw new Error(text);
+	}
+}
+
+async function disableLandscape() {
+	let result = await fetch(
+		`${stelUrl}/api/stelproperty/set?id=LandscapeMgr.landscapeDisplayed&value=false`,
+		{ method: 'POST' });
+	let text = await result.text();
+	if (text !== 'ok') {
+		throw new Error(text);
+	}
+
+	result = await fetch(
+		`${stelUrl}/api/stelproperty/set?id=LandscapeMgr.flagEnvironmentAutoEnabling&value=false`,
+		{ method: 'POST' });
+	text = await result.text();
 	if (text !== 'ok') {
 		throw new Error(text);
 	}

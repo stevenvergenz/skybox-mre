@@ -15,7 +15,8 @@ Stellarium.takeSkybox(
 );
 
 const server = new MRE.WebHost({
-	baseDir: resolve(__dirname, "./public")
+	baseDir: resolve(__dirname, "./public"),
+	optionalPermissions: [MRE.Permissions.UserInteraction]
 });
 
 setTimeout(() => {

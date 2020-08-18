@@ -2,7 +2,7 @@
 
 # start X
 rm /tmp/.X99-lock
-Xvfb :99 -screen 0 1024x1024x16 -nolisten tcp &
+Xvfb :99 -screen 0 1025x1025x16 -nolisten tcp &
 
 # clear screenshot dir
 rm -f /root/screenshots/*

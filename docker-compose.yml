@@ -19,6 +19,8 @@ services:
       context: ./skybox-stellarium/
     expose:
       - "8090/tcp"
+    ports:
+      - "8090:8090"
     networks:
       - internal
     volumes:
