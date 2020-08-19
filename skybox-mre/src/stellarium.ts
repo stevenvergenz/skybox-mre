@@ -2,7 +2,7 @@ import { resolve } from 'path';
 import { rename as cbRename } from 'fs';
 import { promisify } from 'util';
 const rename = promisify(cbRename);
-import { toJulianDay } from 'julian';
+import julian from 'julian';
 import fetch from 'node-fetch';
 
 import { Location } from './location';
@@ -44,7 +44,7 @@ async function setup() {
 	console.log("Stellarium found, initializing");
 
 	// set initial props
-	await disableLandscape();
+	//await disableLandscape();
 	const isShowing = await toggleUI();
 	if (isShowing) {
 		await toggleUI();
@@ -100,7 +100,7 @@ async function takeScreenshot(outName: string): Promise<string> {
 
 	const outfile = resolve(stelOutdir, outName + '.png');
 	await rename(resolve(stelOutdir, 'stellarium-000.png'), outfile);
-	return `/skies/${outName}`;
+	return `skies/${outName}.png`;
 }
 
 async function toggleUI() {
@@ -161,7 +161,7 @@ async function setDirection(direction: CubeFace) {
 }
 
 async function setTime(time: Date, timerate: number) {
-	const julianDay = toJulianDay(time);
+	const julianDay = julian(time);
 	const result = await fetch(`${stelUrl}/api/main/time?time=${julianDay}&timerate=${timerate}`, { method: 'POST' });
 	const text = await result.text();
 	if (text !== 'ok') {
