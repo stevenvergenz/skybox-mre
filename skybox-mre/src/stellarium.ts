@@ -26,6 +26,7 @@ async function setup() {
 	// await sleep(10000);
 
 	// wait for startup
+	// TODO: check that all plugins are loaded, not just the API
 	do {
 		try {
 			const res = await fetch(`${stelUrl}/api/main/status`);
@@ -65,7 +66,7 @@ export function takeSkybox(place: Location, time: Date, outName: string) {
 
 async function _takeSkybox(place: Location, time: Date, outName: string) {
 	await setLocation(place);
-	await setTime(time, 0);
+	await setTime(time, 100);
 
 	await setDirection('n');
 	const north = await takeScreenshot(outName + '-n');
