@@ -3,7 +3,7 @@ import * as MRE from '@microsoft/mixed-reality-extension-sdk';
 import * as Stellarium from './stellarium';
 
 export default class App {
-	private assets: MRE.AssetContainer;
+	private cubeAssets: MRE.AssetContainer;
 	private skyboxAssets: MRE.AssetContainer;
 
 	public constructor(public context: MRE.Context, public params: MRE.ParameterSet) {
@@ -11,56 +11,41 @@ export default class App {
 	}
 
 	private async start() {
-		this.assets = new MRE.AssetContainer(this.context);
+		this.cubeAssets = new MRE.AssetContainer(this.context);
 		this.skyboxAssets = new MRE.AssetContainer(this.context);
 
-		const [cube, skybox] = await Promise.all([
-			this.assets.loadGltf('cubemap.glb'),
+		const [_, skybox] = await Promise.all([
+			// load the skybox mesh
+			this.cubeAssets.loadGltf('cubemap.glb'),
+
+			// generate the skybox textures
 			Stellarium.takeSkybox(
 				{ latitude: 47.60621, longitude: -122.33207 },
 				new Date(),
 				this.context.sessionId
-			)]);
-
-		for (const mat of this.assets.materials) {
-			if (mat.name === 'north') {
-				mat.emissiveTexture = this.skyboxAssets.createTexture('north', {
-					uri: skybox.n,
-					wrapU: MRE.TextureWrapMode.Clamp,
-					wrapV: MRE.TextureWrapMode.Clamp
-				} );
-			} else if (mat.name === 'south') {
-				mat.emissiveTexture = this.skyboxAssets.createTexture('south', {
-					uri: skybox.s,
-					wrapU: MRE.TextureWrapMode.Clamp,
-					wrapV: MRE.TextureWrapMode.Clamp
-				} );
-			} else if (mat.name === 'east') {
-				mat.emissiveTexture = this.skyboxAssets.createTexture('east', {
-					uri: skybox.e,
-					wrapU: MRE.TextureWrapMode.Clamp,
-					wrapV: MRE.TextureWrapMode.Clamp
-				} );
-			} else if (mat.name === 'west') {
-				mat.emissiveTexture = this.skyboxAssets.createTexture('west', {
-					uri: skybox.w,
-					wrapU: MRE.TextureWrapMode.Clamp,
-					wrapV: MRE.TextureWrapMode.Clamp
-				} );
-			} else if (mat.name === 'up') {
-				mat.emissiveTexture = this.skyboxAssets.createTexture('up', {
-					uri: skybox.u,
-					wrapU: MRE.TextureWrapMode.Clamp,
-					wrapV: MRE.TextureWrapMode.Clamp
-				});
-			}
+			)
+			// and load them
+			.then(async (skybox) => {
+				const texBox: { [dir: string]: MRE.Texture } = {};
+				for (const dir in skybox) {
+					texBox[dir] = this.skyboxAssets.createTexture(dir, {
+						uri: skybox[dir],
+						wrapU: MRE.TextureWrapMode.Clamp,
+						wrapV: MRE.TextureWrapMode.Clamp
+					});
+				}
+				await Promise.all(this.skyboxAssets.textures.map(t => t.created));
+				return texBox;
+			})]);
+			
+		// assign generated textures to the prefab
+		for (const mat of this.cubeAssets.materials) {
+			mat.emissiveTexture = skybox[mat.name];
 		}
 
-		// don't spawn prefab until materials are updated
-		await Promise.all(this.skyboxAssets.textures.map(t => t.created));
-
+		// spawn the sky cubemap
 		const actor = MRE.Actor.CreateFromPrefab(this.context, {
-			firstPrefabFrom: cube,
+			prefab: this.cubeAssets.prefabs[0],
 			actor: {
 				name: "skybox",
 				transform: { local: { scale: { x: 1000, y: 1000, z: 1000 } } }

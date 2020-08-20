@@ -8,12 +8,12 @@ import fetch from 'node-fetch';
 import { Location } from './location';
 
 export type CubeFace
-	= 'n'
-	| 's'
-	| 'e'
-	| 'w'
-	| 'u'
-	| 'd';
+	= 'north'
+	| 'south'
+	| 'east'
+	| 'west'
+	| 'up'
+	| 'down';
 
 export type Cube = { [face: string]: string };
 
@@ -26,12 +26,17 @@ async function setup() {
 	// await sleep(10000);
 
 	// wait for startup
-	// TODO: check that all plugins are loaded, not just the API
 	do {
 		try {
-			const res = await fetch(`${stelUrl}/api/main/status`);
+			const res = await fetch(`${stelUrl}/api/main/plugins`);
 			if (res.ok) {
-				break;
+				const status = await res.json();
+				if (Object.keys(status).every(plugin => status[plugin].loaded === status[plugin].loadAtStartup)) {
+					break;
+				} else {
+					console.log("Stellarium starting up");
+					await sleep(2000);
+				}
 			} else {
 				console.log("Stellarium status: " + res.statusText);
 				await sleep(2000);
@@ -68,27 +73,27 @@ async function _takeSkybox(place: Location, time: Date, outName: string) {
 	await setLocation(place);
 	await setTime(time, 100);
 
-	await setDirection('n');
+	await setDirection('north');
 	const north = await takeScreenshot(outName + '-n');
 
-	await setDirection('e');
+	await setDirection('east');
 	const east = await takeScreenshot(outName + '-e');
 
-	await setDirection('s');
+	await setDirection('south');
 	const south = await takeScreenshot(outName + '-s');
 
-	await setDirection('w');
+	await setDirection('west');
 	const west = await takeScreenshot(outName + '-w');
 
-	await setDirection('u');
+	await setDirection('up');
 	const up = await takeScreenshot(outName + '-u');
 
 	return {
-		n: north,
-		e: east,
-		s: south,
-		w: west,
-		u: up
+		north,
+		east,
+		south,
+		west,
+		up
 	} as Cube;
 }
 
@@ -136,20 +141,20 @@ async function setFOV(fov: number) {
 async function setDirection(direction: CubeFace) {
 	let azumith = 0, altitude = 0;
 	switch (direction) {
-		case 'n':
+		case 'north':
 			azumith = Math.PI;
 			break;
-		case 'e':
+		case 'east':
 			azumith = 0.5 * Math.PI;
 			break;
-		case 'w':
+		case 'west':
 			azumith = 1.5 * Math.PI;
 			break;
-		case 'u':
+		case 'up':
 			// not exactly up to prevent gimbal issues
 			altitude = 0.5 * Math.PI - 0.000001;
 			break;
-		case 'd':
+		case 'down':
 			altitude = 1.5 * Math.PI - 0.000001;
 			break;
 	}
