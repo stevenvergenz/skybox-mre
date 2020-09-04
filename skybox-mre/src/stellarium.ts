@@ -17,7 +17,7 @@ export type CubeFace
 
 export type Cube = { [face: string]: string };
 
-const stelUrl = process.env.STEL_URL ?? 'http://localhost:8090/';
+const stelUrl = process.env.STEL_URL ?? 'http://localhost:8090';
 const stelOutdir = process.env.STEL_OUTDIR ?? resolve(__dirname, "./screenshots");
 let stelReady: Promise<Cube> = setup();
 
@@ -38,7 +38,7 @@ async function setup() {
 					await sleep(2000);
 				}
 			} else {
-				console.log("Stellarium status: " + res.statusText);
+				console.log(res.url, res.statusText);
 				await sleep(2000);
 			}
 		} catch (e) {
@@ -71,7 +71,7 @@ export function takeSkybox(place: Location, time: Date, outName: string) {
 
 async function _takeSkybox(place: Location, time: Date, outName: string) {
 	await setLocation(place);
-	await setTime(time, 100);
+	await setTime(time, 0);
 
 	await setDirection('north');
 	const north = await takeScreenshot(outName + '-n');
