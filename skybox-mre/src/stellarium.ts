@@ -50,7 +50,7 @@ async function setup() {
 	console.log("Stellarium found, initializing");
 
 	// set initial props
-	//await disableUI();
+	await disableUI();
 	return null as Cube;
 }
 

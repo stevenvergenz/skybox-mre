@@ -21,7 +21,7 @@ export default class App {
 			// generate the skybox textures
 			Stellarium.takeSkybox(
 				{ latitude: 47.60621, longitude: -122.33207 },
-				new Date(),
+				new Date(Date.now() + 1000 * 60 * 60 * 6),
 				this.context.sessionId
 			)
 			// and load them
@@ -42,6 +42,9 @@ export default class App {
 		for (const mat of this.cubeAssets.materials) {
 			mat.emissiveTexture = skybox[mat.name];
 		}
+
+		// needed for the material changes to propagate to the prefab before we instantiate it.
+		// ideally the actor would refer back to the prefab and take the changes too, but it doesn't.
 		await this.context.internal.nextUpdate();
 
 		// spawn the sky cubemap
