@@ -42,17 +42,15 @@ export default class App {
 		for (const mat of this.cubeAssets.materials) {
 			mat.emissiveTexture = skybox[mat.name];
 		}
+		await this.context.internal.nextUpdate();
 
-		// delay is necessary due to a bug in the asset cache
-		setTimeout(() => {
-			// spawn the sky cubemap
-			const actor = MRE.Actor.CreateFromPrefab(this.context, {
-				prefab: this.cubeAssets.prefabs[0],
-				actor: {
-					name: "skybox",
-					transform: { local: { scale: { x: 1000, y: 1000, z: 1000 } } }
-				}
-			});
-		}, 1000);
+		// spawn the sky cubemap
+		const actor = MRE.Actor.CreateFromPrefab(this.context, {
+			prefab: this.cubeAssets.prefabs[0],
+			actor: {
+				name: "skybox",
+				transform: { local: { scale: { x: 1000, y: 1000, z: 1000 } } }
+			}
+		});
 	}
 }

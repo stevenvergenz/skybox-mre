@@ -50,7 +50,6 @@ async function setup() {
 	console.log("Stellarium found, initializing");
 
 	// set initial props
-	//await disableLandscape();
 	const isShowing = await toggleUI();
 	if (isShowing) {
 		await toggleUI();
@@ -73,6 +72,10 @@ async function _takeSkybox(place: Location, time: Date, outName: string) {
 	await setLocation(place);
 	await setTime(time, 0);
 
+	// the ground takes ~1s to fade in, and I can't find a setting to reduce it
+	//await setStelProperty("actionShow_Ground", true);
+	//await sleep(1000);
+	
 	await setDirection('north');
 	const north = await takeScreenshot(outName + '-n');
 
@@ -98,11 +101,7 @@ async function _takeSkybox(place: Location, time: Date, outName: string) {
 }
 
 async function takeScreenshot(outName: string): Promise<string> {
-	const result = await fetch(`${stelUrl}/api/stelaction/do?id=actionSave_Screenshot_Global`, { method: 'POST'});
-	const text = await result.text();
-	if (text !== 'ok') {
-		throw new Error(text);
-	}
+	await runStelAction("actionSave_Screenshot_Global");
 
 	const outfile = resolve(stelOutdir, outName + '.png');
 	await rename(resolve(stelOutdir, 'stellarium-000.png'), outfile);
@@ -110,33 +109,18 @@ async function takeScreenshot(outName: string): Promise<string> {
 }
 
 async function toggleUI() {
-	let result = await fetch(
-		`${stelUrl}/api/stelproperty/set?id=NebulaMgr.labelsAmount&value=0`,
-		{ method: 'POST' });
-	let text = await result.text();
-	if (text !== 'ok') {
-		throw new Error(text);
-	}
-	
-	result = await fetch(
-		`${stelUrl}/api/stelproperty/set?id=SolarSystem.labelsDisplayed&value=false`,
-		{ method: 'POST' });
-	text = await result.text();
-	if (text !== 'ok') {
-		throw new Error(text);
-	}
-	
-	result = await fetch(`${stelUrl}/api/stelaction/do?id=actionToggle_GuiHidden_Global`, { method: 'POST' });
-	return (await result.text()) === 'true';
+	await setStelProperty("NebulaMgr.labelsAmount", 0);
+	await setStelProperty("SolarSystem.labelsDisplayed", false);
+	return (await runStelActionResponse("actionToggle_GuiHidden_Global")) === "true";
 }
 
-async function setFOV(fov: number) {
+/*async function setFOV(fov: number) {
 	const result = await fetch(`${stelUrl}/api/main/fov?fov=${fov}`, { method: 'POST' });
 	const text = await result.text();
 	if (text !== 'ok') {
 		throw new Error(text);
 	}
-}
+}*/
 
 async function setDirection(direction: CubeFace) {
 	let azumith = 0, altitude = 0;
@@ -189,28 +173,25 @@ async function setLocation(place: Location) {
 }
 
 async function setLightPollution(bortleScaleIndex: number) {
-	const result = await fetch(
-		`${stelUrl}/api/stelproperty/set?id=StelSkyDrawer.bortleScaleIndex&value=${bortleScaleIndex}`,
-		{ method: 'POST' });
-	const text = await result.text();
-	if (text !== 'ok') {
-		throw new Error(text);
-	}
+	await setStelProperty("StelSkyDrawer.bortleScaleIndex", bortleScaleIndex);
 }
 
-async function disableLandscape() {
+async function setStelProperty(propId: string, value: any) {
 	let result = await fetch(
-		`${stelUrl}/api/stelproperty/set?id=LandscapeMgr.landscapeDisplayed&value=false`,
+		`${stelUrl}/api/stelproperty/set?id=${propId}&value=${value}`,
 		{ method: 'POST' });
 	let text = await result.text();
 	if (text !== 'ok') {
 		throw new Error(text);
 	}
+}
 
-	result = await fetch(
-		`${stelUrl}/api/stelproperty/set?id=LandscapeMgr.flagEnvironmentAutoEnabling&value=false`,
-		{ method: 'POST' });
-	text = await result.text();
+async function runStelActionResponse(actionId: string) {
+	const result = await fetch(`${stelUrl}/api/stelaction/do?id=${actionId}`, { method: 'POST'});
+	return await result.text();
+}
+async function runStelAction(actionId: string) {
+	const text = await runStelActionResponse(actionId);
 	if (text !== 'ok') {
 		throw new Error(text);
 	}
