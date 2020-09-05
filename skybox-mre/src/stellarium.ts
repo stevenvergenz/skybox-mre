@@ -50,10 +50,7 @@ async function setup() {
 	console.log("Stellarium found, initializing");
 
 	// set initial props
-	const isShowing = await toggleUI();
-	if (isShowing) {
-		await toggleUI();
-	}
+	//await disableUI();
 	return null as Cube;
 }
 
@@ -106,12 +103,15 @@ async function takeScreenshot(outName: string): Promise<string> {
 	const outfile = resolve(stelOutdir, outName + '.png');
 	await rename(resolve(stelOutdir, 'stellarium-000.png'), outfile);
 	return `skies/${outName}.png`;
+	
+	/*await sleep(700);
+	return `${__dirname}/../../test/testbed-e.png`;*/
 }
 
-async function toggleUI() {
+async function disableUI() {
 	await setStelProperty("NebulaMgr.labelsAmount", 0);
 	await setStelProperty("SolarSystem.labelsDisplayed", false);
-	return (await runStelActionResponse("actionToggle_GuiHidden_Global")) === "true";
+	await setStelProperty("actionToggle_GuiHidden_Global", false);
 }
 
 /*async function setFOV(fov: number) {
