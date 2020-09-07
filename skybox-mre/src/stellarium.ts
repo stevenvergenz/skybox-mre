@@ -68,10 +68,6 @@ export function takeSkybox(place: Location, time: Date, outName: string) {
 async function _takeSkybox(place: Location, time: Date, outName: string) {
 	await setLocation(place);
 	await setTime(time, 0);
-
-	// the ground takes ~1s to fade in, and I can't find a setting to reduce it
-	//await setStelProperty("actionShow_Ground", true);
-	//await sleep(1000);
 	
 	await setDirection('north');
 	const north = await takeScreenshot(outName + '-n');

@@ -14,6 +14,8 @@ export default class App {
 		this.cubeAssets = new MRE.AssetContainer(this.context);
 		this.skyboxAssets = new MRE.AssetContainer(this.context);
 
+		MRE.Actor.CreateFromGltf(this.skyboxAssets, { uri: 'compass.glb' });
+
 		const [_, skybox] = await Promise.all([
 			// load the skybox mesh
 			this.cubeAssets.loadGltf('cubemap.glb'),
