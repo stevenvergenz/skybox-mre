@@ -21,7 +21,7 @@ export default class App {
 			// generate the skybox textures
 			Stellarium.takeSkybox(
 				{ latitude: 47.60621, longitude: -122.33207 },
-				new Date(Date.now() + 1000 * 60 * 60 * 6),
+				new Date(),
 				this.context.sessionId
 			)
 			// and load them
