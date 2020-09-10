@@ -1,18 +1,21 @@
 import * as MRE from '@microsoft/mixed-reality-extension-sdk';
 import App from './app';
+import Controls from './controls';
 
 function pad(value: number, digits: number) {
-	let str = Math.round(value).toString(10);
+	const sign = value < 0 ? "-" : "";
+	let str = Math.round(Math.abs(value)).toString(10);
 	while (str.length < digits) {
 		str = '0' + str;
 	}
-	return str;
+	return sign + str;
 }
 
 type FieldParams = {
 	initialValue: number;
 	prefix: string;
 	suffix: string;
+	wrap: boolean;
 };
 
 export type NumberFieldValueChangedCallback = (oldVal: number, newVal: number) => void;
@@ -23,6 +26,7 @@ export type NumericFieldParams = FieldParams & {
 	incrementStep: number;
 	decrementStep: number;
 	digits: number;
+	forceSign: boolean;
 }
 
 export type StringFieldValueChangedCallback = (oldVal: string, newVal: string) => void;
@@ -40,36 +44,21 @@ export class Field {
 	private decrementButton: MRE.ButtonBehavior;
 	private label: MRE.Actor;
 
-	private numberValueChangedCallbacks: Set<NumberFieldValueChangedCallback>
-		= new Set<NumberFieldValueChangedCallback>();
 	private _numberValue: number;
-	private get numberValue() { return this._numberValue; }
-	private set numberValue(newVal: number) {
-		const oldVal = this._numberValue;
+	public get numberValue() { return this._numberValue; }
+	public set numberValue(newVal: number) {
 		this._numberValue = newVal;
-		this.updateLabel();
-
-		for (const cb of this.numberValueChangedCallbacks) {
-			try {
-				cb(oldVal, newVal);
-			}
-			catch { }
-		}
-
-		if (this.params.type === "string") {
-			for (const cb of this.stringValueChangedCallbacks) {
-				try {
-					cb(this.params.options[oldVal], this.params.options[newVal]);
-				}
-				catch { }
-			}
+		if (this.label) {
+			this.label.text.contents = this.stringValue;
 		}
 	}
 
-	private stringValueChangedCallbacks: Set<StringFieldValueChangedCallback>
-		= new Set<StringFieldValueChangedCallback>();
-	private get stringValue() {
-		if (this.params.type === "string") {
+	public get stringValue() {
+		if (this.params.type === "number") {
+			const sign = (this.params.forceSign && this.numberValue >= 0) ? "+" : "";
+			return this.params.prefix + sign + pad(this.numberValue, this.params.digits) + this.params.suffix;
+		}
+		else if (this.params.type === "string") {
 			return this.params.prefix + this.params.options[this.numberValue] + this.params.suffix;
 		}
 	}
@@ -82,7 +71,7 @@ export class Field {
 	public constructor(
 		private app: App,
 		params: Partial<NumericFieldParams | StringFieldParams>,
-		actorProps: MRE.ActorLike
+		actorProps: Partial<MRE.ActorLike>
 	) {
 		// initialize parameters
 		if (params.type === "number") {
@@ -94,22 +83,29 @@ export class Field {
 				incrementStep: 1,
 				decrementStep: 1,
 				digits: 0,
+				forceSign: false,
 				prefix: "",
 				suffix: "",
+				wrap: false,
 				...params
 			};
 			this.numberValue = this.params.initialValue;
-		} else if (params.type === "string") {
+			this.params.incrementStep = Math.abs(this.params.incrementStep);
+			this.params.decrementStep = Math.abs(this.params.decrementStep);
+		}
+		else if (params.type === "string") {
 			this.params = {
 				type: "string",
 				options: ["A", "B", "C"],
 				initialValue: 0,
 				prefix: "",
 				suffix: "",
+				wrap: false,
 				...params
 			};
 			this.numberValue = this.params.initialValue;
-		} else {
+		}
+		else {
 			throw new Error("Invalid field params");
 		}
 
@@ -117,15 +113,15 @@ export class Field {
 		this.label = MRE.Actor.Create(this.app.context, { actor: {
 			...actorProps,
 			text: {
+				contents: this.stringValue,
 				height: 0.2,
-				color: { r: 0.15 },
+				color: Controls.ControlColor,
 				anchor: MRE.TextAnchorLocation.MiddleCenter
 			}
 		}});
-		this.updateLabel();
 
 		// generate button assets
-		if (this.assets) {
+		if (!this.assets) {
 			this.assets = new MRE.AssetContainer(this.app.context);
 		}
 		let arrowMesh = this.assets.meshes.find(m => m.name === "arrow");
@@ -136,7 +132,7 @@ export class Field {
 		if (!arrowMat) {
 			arrowMat = this.assets.createMaterial("arrow", {
 				color: MRE.Color3.Black(),
-				emissiveColor: new MRE.Color3(0.15, 0, 0)
+				emissiveColor: Controls.ControlColor
 			});
 		}
 
@@ -146,17 +142,17 @@ export class Field {
 			parentId: this.label.id,
 			appearance: { meshId: arrowMesh.id, materialId: arrowMat.id },
 			collider: { geometry: { shape: MRE.ColliderType.Auto }},
-			transform: { local: { position: { y: 0.2 }}},
+			transform: { local: {
+				position: { y: 0.2 },
+				rotation: MRE.Quaternion.FromEulerAngles(0, 0, Math.PI / 3)
+			}},
 		}});
 		const decrActor = MRE.Actor.Create(this.app.context, { actor: {
 			name: "Decrement",
 			parentId: this.label.id,
 			appearance: { meshId: arrowMesh.id, materialId: arrowMat.id },
 			collider: { geometry: { shape: MRE.ColliderType.Auto }},
-			transform: { local: {
-				position: { y: -0.2 },
-				rotation: incrActor.transform.local.rotation.add(new MRE.Quaternion(0,0,1,0))
-			}},
+			transform: { local: { position: { y: -0.2 }}},
 		}});
 
 		// create button behaviors
@@ -164,47 +160,37 @@ export class Field {
 		this.decrementButton = decrActor.setBehavior(MRE.ButtonBehavior);
 
 		// create click handlers
-		this.incrementButton.onClick(() => {
-			if (this.params.type === "number")
-				this.numberValue += Math.abs(this.params.incrementStep);
-			else if (this.params.type === "string")
-				this.numberValue = Math.max(0, Math.min(this.params.options.length, this.numberValue + 1));
+		this.incrementButton.onButton('pressed', () => {
+			if (this.params.type === "number") {
+				let newVal = this.numberValue + this.params.incrementStep;
+				if (this.params.wrap && newVal > this.params.maxValue) {
+					newVal = this.params.minValue;
+				}
+				this.numberValue = Math.max(this.params.minValue, Math.min(this.params.maxValue, newVal));
+			}
+			else if (this.params.type === "string") {
+				let newVal = this.numberValue + 1;
+				if (this.params.wrap && newVal > this.params.options.length - 1) {
+					newVal = 0;
+				}
+				this.numberValue = Math.max(0, Math.min(this.params.options.length - 1, newVal));
+			}
 		});
-		this.decrementButton.onClick(() => {
-			if (this.params.type === "number")
-				this.numberValue -= Math.abs(this.params.decrementStep);
-			else if (this.params.type === "string")
-				this.numberValue = Math.max(0, Math.min(this.params.options.length, this.numberValue - 1));
-		})
-	}
-
-	public onNumberValueChanged(cb: NumberFieldValueChangedCallback) {
-		this.numberValueChangedCallbacks.add(cb);
-	}
-
-	public offNumberValueChanged(cb: NumberFieldValueChangedCallback) {
-		this.numberValueChangedCallbacks.delete(cb);
-	}
-
-	public onStringValueChanged(cb: StringFieldValueChangedCallback) {
-		this.stringValueChangedCallbacks.add(cb);
-	}
-
-	public offStringValueChanged(cb: StringFieldValueChangedCallback) {
-		this.stringValueChangedCallbacks.delete(cb);
-	}
-
-	private updateLabel() {
-		if (this.params.type === "number") {
-			return this.label.text.contents = 
-				this.params.prefix
-				+ pad(this.numberValue, this.params.digits)
-				+ this.params.suffix;
-		} else if (this.params.type === "string") {
-			return this.label.text.contents =
-				this.params.prefix
-				+ this.params.options[this.numberValue]
-				+ this.params.suffix;
-		}
+		this.decrementButton.onButton('pressed', () => {
+			if (this.params.type === "number") {
+				let newVal = this.numberValue - this.params.decrementStep;
+				if (this.params.wrap && newVal < this.params.minValue) {
+					newVal = this.params.maxValue;
+				}
+				this.numberValue = Math.max(this.params.minValue, Math.min(this.params.maxValue, newVal));
+			}
+			else if (this.params.type === "string") {
+				let newVal = this.numberValue - 1;
+				if (this.params.wrap && newVal < 0) {
+					newVal = this.params.options.length - 1;
+				}
+				this.numberValue = Math.max(0, Math.min(this.params.options.length - 1, newVal));
+			}
+		});
 	}
 }

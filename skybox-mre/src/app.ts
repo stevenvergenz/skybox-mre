@@ -1,48 +1,78 @@
 import * as MRE from '@microsoft/mixed-reality-extension-sdk';
 
 import * as Stellarium from './stellarium';
+import Controls from './controls';
 
 export default class App {
-	private cubeAssets: MRE.AssetContainer;
+	private staticAssets: MRE.AssetContainer;
 	private skyboxAssets: MRE.AssetContainer;
+	private skyAssets: MRE.AssetContainer = null;
+	private skybox: MRE.Actor = null;
+
+	private controls: Controls;
 
 	public constructor(public context: MRE.Context, public params: MRE.ParameterSet) {
 		this.context.onStarted(() => this.start());
 	}
 
 	private async start() {
-		this.cubeAssets = new MRE.AssetContainer(this.context);
+		// load static assets
+		this.staticAssets = new MRE.AssetContainer(this.context);
+		MRE.Actor.CreateFromGltf(this.staticAssets, { uri: 'compass.glb' });
+
+		// spawn controls
+		this.controls = new Controls(this, {
+			transform: { local: {
+				position: { y: 0.5, z: -2 },
+				rotation: MRE.Quaternion.FromEulerAngles(Math.PI / 4, Math.PI, 0)
+			}}
+		});
+
+		// spawn placeholder sky
 		this.skyboxAssets = new MRE.AssetContainer(this.context);
+		await this.skyboxAssets.loadGltf('cubemap.glb');
+		this.skybox = MRE.Actor.CreateFromPrefab(this.context, {
+			prefab: this.skyboxAssets.prefabs[0],
+			actor: {
+				name: "skybox",
+				transform: { local: { position: { y: 1.5 }, scale: { x: 1000, y: 1000, z: 1000 } } }
+			}
+		});
+	}
 
-		MRE.Actor.CreateFromGltf(this.skyboxAssets, { uri: 'compass.glb' });
+	public async refreshSky() {
+		// generate the skybox textures
+		const skybox = await Stellarium.takeSkybox(
+			{ latitude: 47.60621, longitude: -122.33207 },
+			new Date(),
+			this.context.sessionId
+		)
 
-		const [_, skybox] = await Promise.all([
-			// load the skybox mesh
-			this.cubeAssets.loadGltf('cubemap.glb'),
+		// blank out the sky before unloading
+		for (const mat of this.skyboxAssets.materials) {
+			mat.emissiveColor = MRE.Color3.Black();
+		}
 
-			// generate the skybox textures
-			Stellarium.takeSkybox(
-				{ latitude: 47.60621, longitude: -122.33207 },
-				new Date(),
-				this.context.sessionId
-			)
-			// and load them
-			.then(async (skybox) => {
-				const texBox: { [dir: string]: MRE.Texture } = {};
-				for (const dir in skybox) {
-					texBox[dir] = this.skyboxAssets.createTexture(dir, {
-						uri: skybox[dir],
-						wrapU: MRE.TextureWrapMode.Clamp,
-						wrapV: MRE.TextureWrapMode.Clamp
-					});
-				}
-				await Promise.all(this.skyboxAssets.textures.map(t => t.created));
-				return texBox;
-			})]);
-			
+		// unload previous skybox
+		if (this.skyAssets) {
+			this.skyAssets.unload();
+		}
+		this.skyAssets = new MRE.AssetContainer(this.context);
+
+		// load the new skybox
+		const texBox: { [dir: string]: MRE.Texture } = {};
+		for (const dir in skybox) {
+			texBox[dir] = this.skyAssets.createTexture(dir, {
+				uri: skybox[dir],
+				wrapU: MRE.TextureWrapMode.Clamp,
+				wrapV: MRE.TextureWrapMode.Clamp
+			});
+		}
+		await Promise.all(this.skyAssets.textures.map(t => t.created));
+
 		// assign generated textures to the prefab
-		for (const mat of this.cubeAssets.materials) {
-			mat.emissiveTexture = skybox[mat.name];
+		for (const mat of this.skyboxAssets.materials) {
+			mat.emissiveTexture = texBox[mat.name];
 		}
 
 		// needed for the material changes to propagate to the prefab before we instantiate it.
@@ -50,11 +80,14 @@ export default class App {
 		await this.context.internal.nextUpdate();
 
 		// spawn the sky cubemap
-		const actor = MRE.Actor.CreateFromPrefab(this.context, {
-			prefab: this.cubeAssets.prefabs[0],
+		if (this.skybox) {
+			this.skybox.destroy();
+		}
+		this.skybox = MRE.Actor.CreateFromPrefab(this.context, {
+			prefab: this.skyboxAssets.prefabs[0],
 			actor: {
 				name: "skybox",
-				transform: { local: { scale: { x: 1000, y: 1000, z: 1000 } } }
+				transform: { local: { position: { y: 1.5 }, scale: { x: 1000, y: 1000, z: 1000 } } }
 			}
 		});
 	}
