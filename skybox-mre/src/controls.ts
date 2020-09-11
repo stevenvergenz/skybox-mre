@@ -23,14 +23,16 @@ export default class Controls {
 
 	public get location() {
 		return {
-			latitude: this.latMagField.numberValue * (this.latDirField.stringValue === "N" ? 1 : -1),
-			longitude: this.longMagField.numberValue * (this.longDirField.stringValue === "E" ? 1 : -1),
+			latitude: this.latMagField.numberValue * (this.latDirField.numberValue === 0 ? 1 : -1),
+			longitude: this.longMagField.numberValue * (this.longDirField.numberValue === 1 ? 1 : -1),
 			altitude: this.altitudeField.numberValue
 		} as Location;
 	}
 
 	public get time() {
-		return new Date();
+		const year = this.yearField.stringValue, month = this.monthField.stringValue, day = this.dayField.stringValue,
+			time = this.hourField.stringValue, tz = this.tzField.stringValue;
+		return new Date(`${year}${month}${day}T${time}${tz}`);
 	}
 
 	public constructor(private app: App, actorInit: Partial<MRE.ActorLike>) {
@@ -88,21 +90,23 @@ export default class Controls {
 			{ type: "number", maxValue: 4000, initialValue: curTime.getUTCFullYear(), digits: 4, suffix: "-" },
 			{ name: "Year", parentId: this.root.id });
 		this.monthField = new Field(this.app,
-			{ type: "number", maxValue: 12, initialValue: curTime.getUTCMonth(), digits: 2, suffix: "-"},
+			{ type: "number", minValue: 1, maxValue: 12, initialValue: curTime.getUTCMonth() + 1, digits: 2, suffix: "-",
+				wrap: true },
 			{ name: "Month", parentId: this.root.id });
 		this.dayField = new Field(this.app,
-			{ type: "number", maxValue: 31, initialValue: curTime.getUTCDay(), digits: 2 },
+			{ type: "number", minValue: 1, maxValue: 31, initialValue: curTime.getUTCDate(), digits: 2, wrap: true },
 			{ name: "Day", parentId: this.root.id });
 		this.hourField = new Field(this.app,
-			{ type: "number", maxValue: 23, initialValue: curTime.getUTCHours(), digits: 2, suffix: ":00"},
+			{ type: "number", maxValue: 23, initialValue: curTime.getUTCHours(), digits: 2, suffix: ":00", wrap: true },
 			{ name: "Time", parentId: this.root.id });
 		this.tzField = new Field(this.app,
-			{ type: "number", minValue: -1200, maxValue: 1200, initialValue: 0, incrementStep: 100, decrementStep: 100, digits: 4, forceSign: true },
+			{ type: "number", minValue: -1200, maxValue: 1200, incrementStep: 100, decrementStep: 100, digits: 4,
+				forceSign: true, wrap: true },
 			{ name: "Timezone", parentId: this.root.id });
 
 		// create a new layout
 		const layout = new MRE.PlanarGridLayout(this.root,
-			MRE.BoxAlignment.MiddleCenter, MRE.BoxAlignment.MiddleCenter);
+			MRE.BoxAlignment.BottomCenter, MRE.BoxAlignment.MiddleCenter);
 
 		// lay out the location fields
 		layout.addCell({
@@ -140,6 +144,64 @@ export default class Controls {
 			width: 0.5, height: 0.6
 		});
 
+		layout.addCell({
+			contents: MRE.Actor.Create(this.app.context, { actor: {
+				name: "Padding", parentId: this.root.id }}),
+			row: 1, column: 5,
+			width: 0.3, height: 0
+		});
+
+		// lay out the time fields
+		layout.addCell({
+			contents: timeLabel,
+			row: 0, column: 6,
+			width: 0, height: 0,
+			alignment: MRE.BoxAlignment.BottomLeft
+		});
+
+		layout.addCell({
+			contents: this.yearField.root,
+			row: 1, column: 6,
+			width: 0.61, height: 0.6
+		});
+		layout.addCell({
+			contents: this.monthField.root,
+			row: 1, column: 7,
+			width: 0.3, height: 0.6
+		});
+		layout.addCell({
+			contents: this.dayField.root,
+			row: 1, column: 8,
+			width: 0.3, height: 0.6
+		});
+		layout.addCell({
+			contents: this.hourField.root,
+			row: 1, column: 9,
+			width: 0.6, height: 0.6
+		});
+		layout.addCell({
+			contents: this.tzField.root,
+			row: 1, column: 10,
+			width: 0.6, height: 0.6
+		});
+
 		layout.applyLayout();
+
+		// create apply button
+		const apply = MRE.Actor.Create(this.app.context, { actor: {
+			name: "ApplyButton",
+			parentId: this.root.id,
+			text: {
+				contents: "APPLY",
+				height: 0.4,
+				anchor: MRE.TextAnchorLocation.MiddleCenter,
+				color: Controls.ControlColor
+			},
+			collider: { geometry: { shape: MRE.ColliderType.Box, size: { x: 1.3, y: 0.5, z: 0.01 }}},
+			transform: { local: { position: { y: -0.9 }}}
+		}});
+		apply.setBehavior(MRE.ButtonBehavior).onButton('pressed', () => {
+			this.app.refreshSky();
+		});
 	}
 }

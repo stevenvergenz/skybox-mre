@@ -23,8 +23,9 @@ export default class App {
 		// spawn controls
 		this.controls = new Controls(this, {
 			transform: { local: {
-				position: { y: 0.5, z: -2 },
-				rotation: MRE.Quaternion.FromEulerAngles(Math.PI / 4, Math.PI, 0)
+				position: { y: 0.6, z: -2 },
+				rotation: MRE.Quaternion.FromEulerAngles(Math.PI / 4, Math.PI, 0),
+				scale: { x: 0.7, y: 0.7, z: 0.7 }
 			}}
 		});
 
@@ -43,10 +44,10 @@ export default class App {
 	public async refreshSky() {
 		// generate the skybox textures
 		const skybox = await Stellarium.takeSkybox(
-			{ latitude: 47.60621, longitude: -122.33207 },
-			new Date(),
+			this.controls.location,
+			this.controls.time,
 			this.context.sessionId
-		)
+		);
 
 		// blank out the sky before unloading
 		for (const mat of this.skyboxAssets.materials) {
@@ -73,6 +74,7 @@ export default class App {
 		// assign generated textures to the prefab
 		for (const mat of this.skyboxAssets.materials) {
 			mat.emissiveTexture = texBox[mat.name];
+			mat.emissiveColor = MRE.Color3.White();
 		}
 
 		// needed for the material changes to propagate to the prefab before we instantiate it.
