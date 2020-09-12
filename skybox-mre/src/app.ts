@@ -43,11 +43,15 @@ export default class App {
 
 	public async refreshSky() {
 		// generate the skybox textures
-		const skybox = await Stellarium.takeSkybox(
-			this.controls.location,
-			this.controls.time,
-			this.context.sessionId
-		);
+		const skybox = await Stellarium.takeSkybox({
+			place: this.controls.location,
+			time: this.controls.time,
+			outName: this.context.sessionId,
+			lightPollution: 2,
+			planetLabels: true,
+			starLabels: true,
+			constellationLines: true
+		});
 
 		// blank out the sky before unloading
 		for (const mat of this.skyboxAssets.materials) {

@@ -70,29 +70,44 @@ function sleep(duration: number) {
 	});
 }
 
+export type TakeSkyboxOptions = {
+	place: Location;
+	time: Date;
+	outName: string;
+	lightPollution: number;
+	planetLabels: boolean;
+	starLabels: boolean;
+	constellationLines: boolean;
+};
+
 /** @returns The URL to the screenshot */
-export function takeSkybox(place: Location, time: Date, outName: string) {
-	return stelReady = stelReady.then(() => _takeSkybox(place, time, outName));
+export function takeSkybox(opts: TakeSkyboxOptions) {
+	return stelReady = stelReady.then(() => _takeSkybox(opts));
 }
 
-async function _takeSkybox(place: Location, time: Date, outName: string) {
-	await setLocation(place);
-	await setTime(time, 0);
+async function _takeSkybox(opts: TakeSkyboxOptions) {
+	await setLocation(opts.place);
+	await setTime(opts.time, 0);
+	await setFOV(90);
+	await setStelProperty('StelSkyDrawer.bortleScaleIndex', opts.lightPollution);
+	await setStelProperty('actionShow_Planets_Labels', opts.planetLabels);
+	await setStelProperty('actionShow_Stars_Labels', opts.starLabels);
+	await setStelProperty('ConstellationMgr.linesDisplayed', opts.constellationLines);
 	
 	await setDirection('north');
-	const north = await takeScreenshot(outName + '-n');
+	const north = await takeScreenshot(opts.outName + '-n');
 
 	await setDirection('east');
-	const east = await takeScreenshot(outName + '-e');
+	const east = await takeScreenshot(opts.outName + '-e');
 
 	await setDirection('south');
-	const south = await takeScreenshot(outName + '-s');
+	const south = await takeScreenshot(opts.outName + '-s');
 
 	await setDirection('west');
-	const west = await takeScreenshot(outName + '-w');
+	const west = await takeScreenshot(opts.outName + '-w');
 
 	await setDirection('up');
-	const up = await takeScreenshot(outName + '-u');
+	const up = await takeScreenshot(opts.outName + '-u');
 
 	return {
 		north,
@@ -120,13 +135,13 @@ async function disableUI() {
 	await setStelProperty("actionToggle_GuiHidden_Global", false);
 }
 
-/*async function setFOV(fov: number) {
+async function setFOV(fov: number) {
 	const result = await fetch(`${stelUrl}/api/main/fov?fov=${fov}`, { method: 'POST' });
 	const text = await result.text();
 	if (text !== 'ok') {
 		throw new Error(text);
 	}
-}*/
+}
 
 async function setDirection(direction: CubeFace) {
 	let azumith = 0, altitude = 0;
@@ -176,10 +191,6 @@ async function setLocation(place: Location) {
 	if (text !== 'ok') {
 		throw new Error(text);
 	}
-}
-
-async function setLightPollution(bortleScaleIndex: number) {
-	await setStelProperty("StelSkyDrawer.bortleScaleIndex", bortleScaleIndex);
 }
 
 async function setStelProperty(propId: string, value: any) {

@@ -1,0 +1,1395 @@
+{
+    "Bright Novae": [
+        {
+            "id": "actionShow_Novae_ConfigDialog",
+            "isCheckable": true,
+            "isChecked": false,
+            "text": "Bright Novae configuration window"
+        }
+    ],
+    "Date and Time": [
+        {
+            "id": "actionNext_Transit",
+            "isCheckable": false,
+            "text": "Next transit of the selected object"
+        },
+        {
+            "id": "actionNext_Rising",
+            "isCheckable": false,
+            "text": "Next rising of the selected object"
+        },
+        {
+            "id": "actionNext_Setting",
+            "isCheckable": false,
+            "text": "Next setting of the selected object"
+        },
+        {
+            "id": "actionToday_Transit",
+            "isCheckable": false,
+            "text": "Today's transit of the selected object"
+        },
+        {
+            "id": "actionToday_Rising",
+            "isCheckable": false,
+            "text": "Today's rising of the selected object"
+        },
+        {
+            "id": "actionToday_Setting",
+            "isCheckable": false,
+            "text": "Today's setting of the selected object"
+        },
+        {
+            "id": "actionPrevious_Transit",
+            "isCheckable": false,
+            "text": "Previous transit of the selected object"
+        },
+        {
+            "id": "actionPrevious_Rising",
+            "isCheckable": false,
+            "text": "Previous rising of the selected object"
+        },
+        {
+            "id": "actionPrevious_Setting",
+            "isCheckable": false,
+            "text": "Previous setting of the selected object"
+        },
+        {
+            "id": "actionIncrease_Time_Speed",
+            "isCheckable": false,
+            "text": "Increase time speed"
+        },
+        {
+            "id": "actionDecrease_Time_Speed",
+            "isCheckable": false,
+            "text": "Decrease time speed"
+        },
+        {
+            "id": "actionIncrease_Time_Speed_Less",
+            "isCheckable": false,
+            "text": "Increase time speed (a little)"
+        },
+        {
+            "id": "actionDecrease_Time_Speed_Less",
+            "isCheckable": false,
+            "text": "Decrease time speed (a little)"
+        },
+        {
+            "id": "actionSet_Real_Time_Speed",
+            "isCheckable": false,
+            "text": "Set normal time rate"
+        },
+        {
+            "id": "actionSet_Time_Rate_Zero",
+            "isCheckable": false,
+            "text": "Set time rate to zero"
+        },
+        {
+            "id": "actionSet_Time_Reverse",
+            "isCheckable": false,
+            "text": "Set reverse time direction"
+        },
+        {
+            "id": "actionReturn_To_Current_Time",
+            "isCheckable": false,
+            "text": "Set time to now"
+        },
+        {
+            "id": "actionAdd_Solar_Minute",
+            "isCheckable": false,
+            "text": "Add 1 solar minute"
+        },
+        {
+            "id": "actionAdd_Solar_Hour",
+            "isCheckable": false,
+            "text": "Add 1 solar hour"
+        },
+        {
+            "id": "actionAdd_Solar_Day",
+            "isCheckable": false,
+            "text": "Add 1 solar day"
+        },
+        {
+            "id": "actionAdd_Solar_Week",
+            "isCheckable": false,
+            "text": "Add 7 solar days"
+        },
+        {
+            "id": "actionSubtract_Solar_Minute",
+            "isCheckable": false,
+            "text": "Subtract 1 solar minute"
+        },
+        {
+            "id": "actionSubtract_Solar_Hour",
+            "isCheckable": false,
+            "text": "Subtract 1 solar hour"
+        },
+        {
+            "id": "actionSubtract_Solar_Day",
+            "isCheckable": false,
+            "text": "Subtract 1 solar day"
+        },
+        {
+            "id": "actionSubtract_Solar_Week",
+            "isCheckable": false,
+            "text": "Subtract 7 solar days"
+        },
+        {
+            "id": "actionAdd_Sidereal_Day",
+            "isCheckable": false,
+            "text": "Add 1 sidereal day"
+        },
+        {
+            "id": "actionAdd_Sidereal_Week",
+            "isCheckable": false,
+            "text": "Add 7 sidereal days"
+        },
+        {
+            "id": "actionAdd_Sidereal_Year",
+            "isCheckable": false,
+            "text": "Add 1 sidereal year"
+        },
+        {
+            "id": "actionAdd_Sidereal_Century",
+            "isCheckable": false,
+            "text": "Add 100 sidereal years"
+        },
+        {
+            "id": "actionAdd_Synodic_Month",
+            "isCheckable": false,
+            "text": "Add 1 synodic month"
+        },
+        {
+            "id": "actionAdd_Saros",
+            "isCheckable": false,
+            "text": "Add 1 saros"
+        },
+        {
+            "id": "actionAdd_Draconic_Month",
+            "isCheckable": false,
+            "text": "Add 1 draconic month"
+        },
+        {
+            "id": "actionAdd_Draconic_Year",
+            "isCheckable": false,
+            "text": "Add 1 draconic year"
+        },
+        {
+            "id": "actionAdd_Anomalistic_Month",
+            "isCheckable": false,
+            "text": "Add 1 anomalistic month"
+        },
+        {
+            "id": "actionAdd_Anomalistic_Year",
+            "isCheckable": false,
+            "text": "Add 1 anomalistic year"
+        },
+        {
+            "id": "actionAdd_Anomalistic_Century",
+            "isCheckable": false,
+            "text": "Add 100 anomalistic years"
+        },
+        {
+            "id": "actionAdd_Mean_Tropical_Month",
+            "isCheckable": false,
+            "text": "Add 1 mean tropical month"
+        },
+        {
+            "id": "actionAdd_Mean_Tropical_Year",
+            "isCheckable": false,
+            "text": "Add 1 mean tropical year"
+        },
+        {
+            "id": "actionAdd_Mean_Tropical_Century",
+            "isCheckable": false,
+            "text": "Add 100 mean tropical years"
+        },
+        {
+            "id": "actionAdd_Tropical_Year",
+            "isCheckable": false,
+            "text": "Add 1 tropical year"
+        },
+        {
+            "id": "actionAdd_Julian_Year",
+            "isCheckable": false,
+            "text": "Add 1 Julian year"
+        },
+        {
+            "id": "actionAdd_Julian_Century",
+            "isCheckable": false,
+            "text": "Add 1 Julian century"
+        },
+        {
+            "id": "actionAdd_Gaussian_Year",
+            "isCheckable": false,
+            "text": "Add 1 Gaussian year"
+        },
+        {
+            "id": "actionAdd_Calendric_Month",
+            "isCheckable": false,
+            "text": "Add 1 calendric month"
+        },
+        {
+            "id": "actionSubtract_Sidereal_Day",
+            "isCheckable": false,
+            "text": "Subtract 1 sidereal day"
+        },
+        {
+            "id": "actionSubtract_Sidereal_Week",
+            "isCheckable": false,
+            "text": "Subtract 7 sidereal days"
+        },
+        {
+            "id": "actionSubtract_Sidereal_Year",
+            "isCheckable": false,
+            "text": "Subtract 1 sidereal year"
+        },
+        {
+            "id": "actionSubtract_Sidereal_Century",
+            "isCheckable": false,
+            "text": "Subtract 100 sidereal years"
+        },
+        {
+            "id": "actionSubtract_Synodic_Month",
+            "isCheckable": false,
+            "text": "Subtract 1 synodic month"
+        },
+        {
+            "id": "actionSubtract_Saros",
+            "isCheckable": false,
+            "text": "Subtract 1 saros"
+        },
+        {
+            "id": "actionSubtract_Draconic_Month",
+            "isCheckable": false,
+            "text": "Subtract 1 draconic month"
+        },
+        {
+            "id": "actionSubtract_Draconic_Year",
+            "isCheckable": false,
+            "text": "Subtract 1 draconic year"
+        },
+        {
+            "id": "actionSubtract_Anomalistic_Month",
+            "isCheckable": false,
+            "text": "Subtract 1 anomalistic month"
+        },
+        {
+            "id": "actionSubtract_Anomalistic_Year",
+            "isCheckable": false,
+            "text": "Subtract 1 anomalistic year"
+        },
+        {
+            "id": "actionSubtract_Anomalistic_Century",
+            "isCheckable": false,
+            "text": "Subtract 100 anomalistic years"
+        },
+        {
+            "id": "actionSubtract_Mean_Tropical_Month",
+            "isCheckable": false,
+            "text": "Subtract 1 mean tropical month"
+        },
+        {
+            "id": "actionSubtract_Mean_Tropical_Year",
+            "isCheckable": false,
+            "text": "Subtract 1 mean tropical year"
+        },
+        {
+            "id": "actionSubtract_Mean_Tropical_Century",
+            "isCheckable": false,
+            "text": "Subtract 100 mean tropical years"
+        },
+        {
+            "id": "actionSubtract_Tropical_Year",
+            "isCheckable": false,
+            "text": "Subtract 1 tropical year"
+        },
+        {
+            "id": "actionSubtract_Julian_Year",
+            "isCheckable": false,
+            "text": "Subtract 1 Julian year"
+        },
+        {
+            "id": "actionSubtract_Julian_Century",
+            "isCheckable": false,
+            "text": "Subtract 1 Julian century"
+        },
+        {
+            "id": "actionSubtract_Gaussian_Year",
+            "isCheckable": false,
+            "text": "Subtract 1 Gaussian year"
+        },
+        {
+            "id": "actionSubtract_Calendric_Month",
+            "isCheckable": false,
+            "text": "Subtract 1 calendric month"
+        },
+        {
+            "id": "actionIncrease_Script_Speed",
+            "isCheckable": false,
+            "text": "Speed up the script execution rate"
+        },
+        {
+            "id": "actionDecrease_Script_Speed",
+            "isCheckable": false,
+            "text": "Slow down the script execution rate"
+        },
+        {
+            "id": "actionSet_Real_Script_Speed",
+            "isCheckable": false,
+            "text": "Set the normal script execution rate"
+        },
+        {
+            "id": "actionStop_Script",
+            "isCheckable": false,
+            "text": "Stop script execution"
+        },
+        {
+            "id": "actionPause_Script",
+            "isCheckable": false,
+            "text": "Pause script execution"
+        },
+        {
+            "id": "actionResume_Script",
+            "isCheckable": false,
+            "text": "Resume script execution"
+        }
+    ],
+    "Display Options": [
+        {
+            "id": "actionShow_Hips_Surveys",
+            "isCheckable": true,
+            "isChecked": false,
+            "text": "Toggle Hierarchical Progressive Surveys (experimental)"
+        },
+        {
+            "id": "actionShow_Planets",
+            "isCheckable": true,
+            "isChecked": true,
+            "text": "Planets"
+        },
+        {
+            "id": "actionShow_Planets_Labels",
+            "isCheckable": true,
+            "isChecked": true,
+            "text": "Planet labels"
+        },
+        {
+            "id": "actionShow_Planets_Orbits",
+            "isCheckable": true,
+            "isChecked": false,
+            "text": "Planet orbits"
+        },
+        {
+            "id": "actionShow_Planets_Trails",
+            "isCheckable": true,
+            "isChecked": false,
+            "text": "Planet trails"
+        },
+        {
+            "id": "actionShow_Planets_Hints",
+            "isCheckable": true,
+            "isChecked": false,
+            "text": "Planet markers"
+        },
+        {
+            "id": "actionShow_Planets_Pointers",
+            "isCheckable": true,
+            "isChecked": true,
+            "text": "Planet selection marker"
+        },
+        {
+            "id": "actionShow_Planets_EnlargeMoon",
+            "isCheckable": true,
+            "isChecked": false,
+            "text": "Enlarge Moon"
+        },
+        {
+            "id": "actionShow_Planets_EnlargeMinor",
+            "isCheckable": true,
+            "isChecked": false,
+            "text": "Enlarge minor bodies"
+        },
+        {
+            "id": "actionShow_Skyculture_NativePlanetNames",
+            "isCheckable": true,
+            "isChecked": true,
+            "text": "Native planet names (from starlore)"
+        },
+        {
+            "id": "actionShow_Planets_Nomenclature",
+            "isCheckable": true,
+            "isChecked": false,
+            "text": "Nomenclature labels"
+        },
+        {
+            "id": "actionShow_Stars",
+            "isCheckable": true,
+            "isChecked": true,
+            "text": "Stars"
+        },
+        {
+            "id": "actionShow_Stars_Labels",
+            "isCheckable": true,
+            "isChecked": true,
+            "text": "Stars labels"
+        },
+        {
+            "id": "actionShow_Stars_MagnitudeLimitIncrease",
+            "isCheckable": false,
+            "text": "Increase the magnitude limit for stars"
+        },
+        {
+            "id": "actionShow_Stars_MagnitudeLimitReduce",
+            "isCheckable": false,
+            "text": "Reduce the magnitude limit for stars"
+        },
+        {
+            "id": "actionHorizontal_Flip",
+            "isCheckable": true,
+            "isChecked": false,
+            "text": "Flip scene horizontally"
+        },
+        {
+            "id": "actionVertical_Flip",
+            "isCheckable": true,
+            "isChecked": false,
+            "text": "Flip scene vertically"
+        },
+        {
+            "id": "actionShow_Nebulas",
+            "isCheckable": true,
+            "isChecked": false,
+            "text": "Deep-sky objects"
+        },
+        {
+            "id": "actionSet_Nebula_TypeFilterUsage",
+            "isCheckable": true,
+            "isChecked": false,
+            "text": "Toggle DSO type filter"
+        },
+        {
+            "id": "actionShow_MilkyWay",
+            "isCheckable": true,
+            "isChecked": true,
+            "text": "Milky Way"
+        },
+        {
+            "id": "actionShow_ZodiacalLight",
+            "isCheckable": true,
+            "isChecked": true,
+            "text": "Zodiacal Light"
+        },
+        {
+            "id": "actionShow_DSO_Textures",
+            "isCheckable": true,
+            "isChecked": true,
+            "text": "Deep-sky objects background images"
+        },
+        {
+            "id": "actionShow_DSO_Textures_Reload",
+            "isCheckable": false,
+            "text": "Reload the deep-sky objects background images"
+        },
+        {
+            "id": "actionShow_Toast_Survey",
+            "isCheckable": true,
+            "isChecked": false,
+            "text": "Digitized Sky Survey (TOAST)"
+        },
+        {
+            "id": "actionShow_Constellation_Lines",
+            "isCheckable": true,
+            "isChecked": false,
+            "text": "Constellation lines"
+        },
+        {
+            "id": "actionShow_Constellation_Art",
+            "isCheckable": true,
+            "isChecked": false,
+            "text": "Constellation art"
+        },
+        {
+            "id": "actionShow_Constellation_Labels",
+            "isCheckable": true,
+            "isChecked": false,
+            "text": "Constellation labels"
+        },
+        {
+            "id": "actionShow_Constellation_Boundaries",
+            "isCheckable": true,
+            "isChecked": false,
+            "text": "Constellation boundaries"
+        },
+        {
+            "id": "actionShow_Constellation_Isolated",
+            "isCheckable": true,
+            "isChecked": false,
+            "text": "Select single constellation"
+        },
+        {
+            "id": "actionShow_Constellation_Deselect",
+            "isCheckable": false,
+            "text": "Remove selection of constellations"
+        },
+        {
+            "id": "actionShow_Constellation_Select",
+            "isCheckable": false,
+            "text": "Select all constellations"
+        },
+        {
+            "id": "actionShow_Starlore_Reload",
+            "isCheckable": false,
+            "text": "Reload the sky culture"
+        },
+        {
+            "id": "actionShow_Asterism_Lines",
+            "isCheckable": true,
+            "isChecked": false,
+            "text": "Asterism lines"
+        },
+        {
+            "id": "actionShow_Asterism_Labels",
+            "isCheckable": true,
+            "isChecked": false,
+            "text": "Asterism labels"
+        },
+        {
+            "id": "actionShow_Ray_Helpers",
+            "isCheckable": true,
+            "isChecked": false,
+            "text": "Ray helpers"
+        },
+        {
+            "id": "actionShow_Atmosphere",
+            "isCheckable": true,
+            "isChecked": true,
+            "text": "Atmosphere"
+        },
+        {
+            "id": "actionShow_Fog",
+            "isCheckable": true,
+            "isChecked": true,
+            "text": "Fog"
+        },
+        {
+            "id": "actionShow_Cardinal_Points",
+            "isCheckable": true,
+            "isChecked": true,
+            "text": "Cardinal points"
+        },
+        {
+            "id": "actionShow_Ground",
+            "isCheckable": true,
+            "isChecked": true,
+            "text": "Ground"
+        },
+        {
+            "id": "actionShow_LandscapeIllumination",
+            "isCheckable": true,
+            "isChecked": true,
+            "text": "Landscape illumination"
+        },
+        {
+            "id": "actionShow_LandscapeLabels",
+            "isCheckable": true,
+            "isChecked": true,
+            "text": "Landscape labels"
+        },
+        {
+            "id": "actionShow_LightPollutionFromDatabase",
+            "isCheckable": true,
+            "isChecked": false,
+            "text": "Light pollution data from locations database"
+        },
+        {
+            "id": "actionShow_LightPollutionIncrease",
+            "isCheckable": false,
+            "text": "Increase light pollution"
+        },
+        {
+            "id": "actionShow_LightPollutionReduce",
+            "isCheckable": false,
+            "text": "Reduce light pollution"
+        },
+        {
+            "id": "actionShow_LightPollutionCyclicChange",
+            "isCheckable": false,
+            "text": "Cyclic change in light pollution"
+        },
+        {
+            "id": "actionShow_Gridlines",
+            "isCheckable": true,
+            "isChecked": true,
+            "text": "Grids and lines"
+        },
+        {
+            "id": "actionShow_Equatorial_Grid",
+            "isCheckable": true,
+            "isChecked": false,
+            "text": "Equatorial grid"
+        },
+        {
+            "id": "actionShow_Azimuthal_Grid",
+            "isCheckable": true,
+            "isChecked": false,
+            "text": "Azimuthal grid"
+        },
+        {
+            "id": "actionShow_Ecliptic_Line",
+            "isCheckable": true,
+            "isChecked": false,
+            "text": "Ecliptic line"
+        },
+        {
+            "id": "actionShow_Ecliptic_J2000_Line",
+            "isCheckable": true,
+            "isChecked": false,
+            "text": "Ecliptic J2000 line"
+        },
+        {
+            "id": "actionShow_Equator_Line",
+            "isCheckable": true,
+            "isChecked": false,
+            "text": "Equator line"
+        },
+        {
+            "id": "actionShow_Equator_J2000_Line",
+            "isCheckable": true,
+            "isChecked": false,
+            "text": "Equator J2000 line"
+        },
+        {
+            "id": "actionShow_Meridian_Line",
+            "isCheckable": true,
+            "isChecked": false,
+            "text": "Meridian line"
+        },
+        {
+            "id": "actionShow_Horizon_Line",
+            "isCheckable": true,
+            "isChecked": false,
+            "text": "Horizon line"
+        },
+        {
+            "id": "actionShow_Equatorial_J2000_Grid",
+            "isCheckable": true,
+            "isChecked": false,
+            "text": "Equatorial J2000 grid"
+        },
+        {
+            "id": "actionShow_Ecliptic_J2000_Grid",
+            "isCheckable": true,
+            "isChecked": false,
+            "text": "Ecliptic J2000 grid"
+        },
+        {
+            "id": "actionShow_Ecliptic_Grid",
+            "isCheckable": true,
+            "isChecked": false,
+            "text": "Ecliptic grid"
+        },
+        {
+            "id": "actionShow_Galactic_Grid",
+            "isCheckable": true,
+            "isChecked": false,
+            "text": "Galactic grid"
+        },
+        {
+            "id": "actionShow_Galactic_Equator_Line",
+            "isCheckable": true,
+            "isChecked": false,
+            "text": "Galactic equator"
+        },
+        {
+            "id": "actionShow_Supergalactic_Grid",
+            "isCheckable": true,
+            "isChecked": false,
+            "text": "Supergalactic grid"
+        },
+        {
+            "id": "actionShow_Supergalactic_Equator_Line",
+            "isCheckable": true,
+            "isChecked": false,
+            "text": "Supergalactic equator"
+        },
+        {
+            "id": "actionShow_Longitude_Line",
+            "isCheckable": true,
+            "isChecked": false,
+            "text": "Opposition/conjunction longitude line"
+        },
+        {
+            "id": "actionShow_Precession_Circles",
+            "isCheckable": true,
+            "isChecked": false,
+            "text": "Precession Circles"
+        },
+        {
+            "id": "actionShow_Prime_Vertical_Line",
+            "isCheckable": true,
+            "isChecked": false,
+            "text": "Prime Vertical"
+        },
+        {
+            "id": "actionShow_Colure_Lines",
+            "isCheckable": true,
+            "isChecked": false,
+            "text": "Colure Lines"
+        },
+        {
+            "id": "actionShow_Circumpolar_Circles",
+            "isCheckable": true,
+            "isChecked": false,
+            "text": "Circumpolar Circles"
+        },
+        {
+            "id": "actionShow_Celestial_J2000_Poles",
+            "isCheckable": true,
+            "isChecked": false,
+            "text": "Celestial J2000 poles"
+        },
+        {
+            "id": "actionShow_Celestial_Poles",
+            "isCheckable": true,
+            "isChecked": false,
+            "text": "Celestial poles"
+        },
+        {
+            "id": "actionShow_Zenith_Nadir",
+            "isCheckable": true,
+            "isChecked": false,
+            "text": "Zenith and nadir"
+        },
+        {
+            "id": "actionShow_Ecliptic_J2000_Poles",
+            "isCheckable": true,
+            "isChecked": false,
+            "text": "Ecliptic J2000 poles"
+        },
+        {
+            "id": "actionShow_Ecliptic_Poles",
+            "isCheckable": true,
+            "isChecked": false,
+            "text": "Ecliptic poles"
+        },
+        {
+            "id": "actionShow_Galactic_Poles",
+            "isCheckable": true,
+            "isChecked": false,
+            "text": "Galactic poles"
+        },
+        {
+            "id": "actionShow_Supergalactic_Poles",
+            "isCheckable": true,
+            "isChecked": false,
+            "text": "Supergalactic poles"
+        },
+        {
+            "id": "actionShow_Equinox_J2000_Points",
+            "isCheckable": true,
+            "isChecked": false,
+            "text": "Equinox J2000 points"
+        },
+        {
+            "id": "actionShow_Equinox_Points",
+            "isCheckable": true,
+            "isChecked": false,
+            "text": "Equinox points"
+        },
+        {
+            "id": "actionShow_Solstice_J2000_Points",
+            "isCheckable": true,
+            "isChecked": false,
+            "text": "Solstice J2000 points"
+        },
+        {
+            "id": "actionShow_Solstice_Points",
+            "isCheckable": true,
+            "isChecked": false,
+            "text": "Solstice points"
+        },
+        {
+            "id": "actionShow_Antisolar_Point",
+            "isCheckable": true,
+            "isChecked": false,
+            "text": "Antisolar point"
+        },
+        {
+            "id": "actionShow_Apex_Points",
+            "isCheckable": true,
+            "isChecked": false,
+            "text": "Apex points"
+        },
+        {
+            "id": "actionShow_FOV_Center_Marker",
+            "isCheckable": true,
+            "isChecked": false,
+            "text": "FOV Center marker"
+        },
+        {
+            "id": "actionShow_FOV_Circular_Marker",
+            "isCheckable": true,
+            "isChecked": false,
+            "text": "Circular marker of FOV"
+        },
+        {
+            "id": "actionShow_FOV_Rectangular_Marker",
+            "isCheckable": true,
+            "isChecked": false,
+            "text": "Rectangular marker of FOV"
+        },
+        {
+            "id": "actionShow_Night_Mode",
+            "isCheckable": true,
+            "isChecked": false,
+            "text": "Night mode"
+        },
+        {
+            "id": "actionSet_Full_Screen_Global",
+            "isCheckable": true,
+            "isChecked": true,
+            "text": "Full-screen mode"
+        }
+    ],
+    "Exoplanets": [
+        {
+            "id": "actionShow_Exoplanets",
+            "isCheckable": true,
+            "isChecked": false,
+            "text": "Show exoplanets"
+        },
+        {
+            "id": "actionShow_Exoplanets_ConfigDialog",
+            "isCheckable": true,
+            "isChecked": false,
+            "text": "Exoplanets configuration window"
+        }
+    ],
+    "Field of View": [
+        {
+            "id": "actionSet_FOV_180deg",
+            "isCheckable": false,
+            "text": "Set FOV to 180°"
+        },
+        {
+            "id": "actionSet_FOV_90deg",
+            "isCheckable": false,
+            "text": "Set FOV to 90°"
+        },
+        {
+            "id": "actionSet_FOV_60deg",
+            "isCheckable": false,
+            "text": "Set FOV to 60°"
+        },
+        {
+            "id": "actionSet_FOV_45deg",
+            "isCheckable": false,
+            "text": "Set FOV to 45°"
+        },
+        {
+            "id": "actionSet_FOV_20deg",
+            "isCheckable": false,
+            "text": "Set FOV to 20°"
+        },
+        {
+            "id": "actionSet_FOV_10deg",
+            "isCheckable": false,
+            "text": "Set FOV to 10°"
+        },
+        {
+            "id": "actionSet_FOV_5deg",
+            "isCheckable": false,
+            "text": "Set FOV to 5°"
+        },
+        {
+            "id": "actionSet_FOV_2deg",
+            "isCheckable": false,
+            "text": "Set FOV to 2°"
+        },
+        {
+            "id": "actionSet_FOV_1deg",
+            "isCheckable": false,
+            "text": "Set FOV to 1°"
+        },
+        {
+            "id": "actionSet_FOV_0_5deg",
+            "isCheckable": false,
+            "text": "Set FOV to 0.5°"
+        }
+    ],
+    "Meteor Showers": [
+        {
+            "id": "actionShow_MeteorShowers",
+            "isCheckable": true,
+            "isChecked": true,
+            "text": "Toggle meteor showers"
+        },
+        {
+            "id": "actionShow_MeteorShowers_labels",
+            "isCheckable": true,
+            "isChecked": true,
+            "text": "Toggle radiant labels"
+        },
+        {
+            "id": "actionShow_MeteorShowers_config_dialog",
+            "isCheckable": true,
+            "isChecked": false,
+            "text": "Show settings dialog"
+        },
+        {
+            "id": "actionShow_MeteorShowers_search_dialog",
+            "isCheckable": true,
+            "isChecked": false,
+            "text": "Show search dialog"
+        }
+    ],
+    "Miscellaneous": [
+        {
+            "id": "actionSwitch_Equatorial_Mount",
+            "isCheckable": true,
+            "isChecked": false,
+            "text": "Switch between equatorial and azimuthal mount"
+        },
+        {
+            "id": "actionSave_Screenshot_Global",
+            "isCheckable": false,
+            "text": "Save screenshot"
+        },
+        {
+            "id": "actionReload_Shaders",
+            "isCheckable": false,
+            "text": "Reload shaders (for development)"
+        },
+        {
+            "id": "actionQuit_Global",
+            "isCheckable": false,
+            "text": "Quit"
+        },
+        {
+            "id": "actionSave_Copy_Object_Information_Global",
+            "isCheckable": false,
+            "text": "Copy selected object information to clipboard"
+        },
+        {
+            "id": "actionAutoHideHorizontalButtonBar",
+            "isCheckable": true,
+            "isChecked": true,
+            "text": "Auto hide horizontal button bar"
+        },
+        {
+            "id": "actionAutoHideVerticalButtonBar",
+            "isCheckable": true,
+            "isChecked": true,
+            "text": "Auto hide vertical button bar"
+        },
+        {
+            "id": "actionToggle_GuiHidden_Global",
+            "isCheckable": true,
+            "isChecked": true,
+            "text": "Toggle visibility of GUI"
+        }
+    ],
+    "Movement and Selection": [
+        {
+            "id": "actionGoto_Selected_Object",
+            "isCheckable": true,
+            "isChecked": false,
+            "text": "Center on selected object"
+        },
+        {
+            "id": "actionGoto_Deselection",
+            "isCheckable": false,
+            "text": "Deselect the selected object"
+        },
+        {
+            "id": "actionZoom_In_Auto",
+            "isCheckable": false,
+            "text": "Zoom in on selected object"
+        },
+        {
+            "id": "actionZoom_Out_Auto",
+            "isCheckable": false,
+            "text": "Zoom out"
+        },
+        {
+            "id": "actionSet_Tracking",
+            "isCheckable": true,
+            "isChecked": false,
+            "text": "Track object"
+        },
+        {
+            "id": "actionLook_Towards_East",
+            "isCheckable": false,
+            "text": "Look towards East"
+        },
+        {
+            "id": "actionLook_Towards_West",
+            "isCheckable": false,
+            "text": "Look towards West"
+        },
+        {
+            "id": "actionLook_Towards_North",
+            "isCheckable": false,
+            "text": "Look towards North"
+        },
+        {
+            "id": "actionLook_Towards_South",
+            "isCheckable": false,
+            "text": "Look towards South"
+        },
+        {
+            "id": "actionLook_Towards_Zenith",
+            "isCheckable": false,
+            "text": "Look towards Zenith"
+        },
+        {
+            "id": "actionLook_Towards_NCP",
+            "isCheckable": false,
+            "text": "Look towards North Celestial pole"
+        },
+        {
+            "id": "actionLook_Towards_SCP",
+            "isCheckable": false,
+            "text": "Look towards South Celestial pole"
+        },
+        {
+            "id": "actionSet_Home_Planet_To_Selected",
+            "isCheckable": false,
+            "text": "Set home planet to selected planet"
+        },
+        {
+            "id": "actionGo_Home_Global",
+            "isCheckable": false,
+            "text": "Go to home"
+        }
+    ],
+    "Remote Control": [
+        {
+            "id": "actionShow_Remote_Control",
+            "isCheckable": true,
+            "isChecked": true,
+            "text": "Remote control"
+        }
+    ],
+    "Satellites": [
+        {
+            "id": "actionShow_Satellite_Hints",
+            "isCheckable": true,
+            "isChecked": true,
+            "text": "Satellite hints"
+        },
+        {
+            "id": "actionShow_Satellite_Labels",
+            "isCheckable": true,
+            "isChecked": false,
+            "text": "Satellite labels"
+        },
+        {
+            "id": "actionShow_Satellite_ConfigDialog_Global",
+            "isCheckable": true,
+            "isChecked": false,
+            "text": "Satellites configuration window"
+        }
+    ],
+    "Scripts": [
+        {
+            "id": "actionScript/phobos_phun_1.ssc",
+            "isCheckable": false,
+            "text": "Double eclipse from Deimos in 2017"
+        },
+        {
+            "id": "actionScript/earth_1.ssc",
+            "isCheckable": false,
+            "text": "Earth best views from other bodies"
+        },
+        {
+            "id": "actionScript/h400_tour.ssc",
+            "isCheckable": false,
+            "text": "Herschel 400 Tour"
+        },
+        {
+            "id": "actionScript/zodiac.ssc",
+            "isCheckable": false,
+            "text": "Zodiac"
+        },
+        {
+            "id": "actionScript/morsels_3.ssc",
+            "isCheckable": false,
+            "text": "Occultations of bright stars by planets"
+        },
+        {
+            "id": "actionScript/phobos_phun_4.ssc",
+            "isCheckable": false,
+            "text": "Occultation of Earth and Jupiter 2048"
+        },
+        {
+            "id": "actionScript/skybox.ssc",
+            "isCheckable": false,
+            "text": "Skybox Tiles"
+        },
+        {
+            "id": "actionScript/morsels_2.ssc",
+            "isCheckable": false,
+            "text": "Jupiter without Galilean satellites"
+        },
+        {
+            "id": "actionScript/solar_eclipse.ssc",
+            "isCheckable": false,
+            "text": "Solar Eclipse 2009"
+        },
+        {
+            "id": "actionScript/western_constellations_tour.ssc",
+            "isCheckable": false,
+            "text": "Western Constellations Tour"
+        },
+        {
+            "id": "actionScript/lunar_total.ssc",
+            "isCheckable": false,
+            "text": "Total Lunar Eclipse"
+        },
+        {
+            "id": "actionScript/martian_analemma.ssc",
+            "isCheckable": false,
+            "text": "Martian analemma"
+        },
+        {
+            "id": "actionScript/earth_3.ssc",
+            "isCheckable": false,
+            "text": "Earth Events from a floating city on Venus"
+        },
+        {
+            "id": "actionScript/solar_system_screensaver.ssc",
+            "isCheckable": false,
+            "text": "Solar System Screensaver"
+        },
+        {
+            "id": "actionScript/double_stars.ssc",
+            "isCheckable": false,
+            "text": "20 Fun Naked-Eye Double Stars"
+        },
+        {
+            "id": "actionScript/earth_7.ssc",
+            "isCheckable": false,
+            "text": "Earth and other Planets from Ceres"
+        },
+        {
+            "id": "actionScript/uranian_analemma.ssc",
+            "isCheckable": false,
+            "text": "Uranian analemma"
+        },
+        {
+            "id": "actionScript/triple_sunrise_and_sunsets.ssc",
+            "isCheckable": false,
+            "text": "Mercury Triple Sunrise and Sunset"
+        },
+        {
+            "id": "actionScript/startup.ssc",
+            "isCheckable": false,
+            "text": "Startup Script"
+        },
+        {
+            "id": "actionScript/landscapes.ssc",
+            "isCheckable": false,
+            "text": "Landscape Tour"
+        },
+        {
+            "id": "actionScript/planets_tour.ssc",
+            "isCheckable": false,
+            "text": "Planet Objects Tour"
+        },
+        {
+            "id": "actionScript/earth_2.ssc",
+            "isCheckable": false,
+            "text": "Earth Events from Mercury"
+        },
+        {
+            "id": "actionScript/binocular_highlights.ssc",
+            "isCheckable": false,
+            "text": "Binocular Highlights"
+        },
+        {
+            "id": "actionScript/saturnian_analemma.ssc",
+            "isCheckable": false,
+            "text": "Saturnian analemma"
+        },
+        {
+            "id": "actionScript/earth_5.ssc",
+            "isCheckable": false,
+            "text": "Earth and other planet's Greatest Elongations and Oppositions from Mars"
+        },
+        {
+            "id": "actionScript/morsels_4.ssc",
+            "isCheckable": false,
+            "text": "Mutual occultations of planets"
+        },
+        {
+            "id": "actionScript/phobos_phun_3.ssc",
+            "isCheckable": false,
+            "text": "Eclipse from Olympus Mons Jan 2, 2021"
+        },
+        {
+            "id": "actionScript/phobos_phun_2.ssc",
+            "isCheckable": false,
+            "text": "Double eclipse from Deimos in 2031"
+        },
+        {
+            "id": "actionScript/sun.ssc",
+            "isCheckable": false,
+            "text": "Sun from different planets"
+        },
+        {
+            "id": "actionScript/analemma.ssc",
+            "isCheckable": false,
+            "text": "Analemma"
+        },
+        {
+            "id": "actionScript/phobos_phun_5.ssc",
+            "isCheckable": false,
+            "text": "3 Transits and 2 Eclipses from Deimos 2027"
+        },
+        {
+            "id": "actionScript/morsels_1.ssc",
+            "isCheckable": false,
+            "text": "Jupiter and triple shadow phenomena"
+        },
+        {
+            "id": "actionScript/best_ngc.ssc",
+            "isCheckable": false,
+            "text": "Best objects in the New General Catalog"
+        },
+        {
+            "id": "actionScript/screensaver.ssc",
+            "isCheckable": false,
+            "text": "Screensaver"
+        },
+        {
+            "id": "actionScript/constellations_tour.ssc",
+            "isCheckable": false,
+            "text": "Constellations Tour"
+        },
+        {
+            "id": "actionScript/messier_marathon.ssc",
+            "isCheckable": false,
+            "text": "Messier Marathon"
+        },
+        {
+            "id": "actionScript/transit_of_venus.ssc",
+            "isCheckable": false,
+            "text": "Transit of Venus"
+        },
+        {
+            "id": "actionScript/bennett.ssc",
+            "isCheckable": false,
+            "text": "The Jack Bennett Catalog"
+        },
+        {
+            "id": "actionScript/messier_tour.ssc",
+            "isCheckable": false,
+            "text": "Messier Objects Tour"
+        },
+        {
+            "id": "actionScript/earth_6.ssc",
+            "isCheckable": false,
+            "text": "Earth and Mars Greatest Elongations and Transits from Callisto"
+        },
+        {
+            "id": "actionScript/largest_known_stars.ssc",
+            "isCheckable": false,
+            "text": "List of largest known stars"
+        },
+        {
+            "id": "actionScript/supernova.ssc",
+            "isCheckable": false,
+            "text": "Tycho's Supernova"
+        },
+        {
+            "id": "actionScript/lunar_partial.ssc",
+            "isCheckable": false,
+            "text": "Partial Lunar Eclipse"
+        },
+        {
+            "id": "actionScript/binosky.ssc",
+            "isCheckable": false,
+            "text": "Binosky: Deep Sky Objects for Binoculars"
+        },
+        {
+            "id": "actionScript/sky_cultures.ssc",
+            "isCheckable": false,
+            "text": "Sky Culture Tour"
+        },
+        {
+            "id": "actionScript/earth_4.ssc",
+            "isCheckable": false,
+            "text": "Earth Events from Mars"
+        }
+    ],
+    "Solar System Editor": [
+        {
+            "id": "actionShow_MPC_Import",
+            "isCheckable": false,
+            "text": "Import orbital elements in MPC format..."
+        }
+    ],
+    "Windows": [
+        {
+            "id": "actionShow_ScriptConsole_Window_Global",
+            "isCheckable": true,
+            "isChecked": false,
+            "text": "Script console window"
+        },
+        {
+            "id": "actionShow_Help_Window_Global",
+            "isCheckable": true,
+            "isChecked": false,
+            "text": "Help window"
+        },
+        {
+            "id": "actionShow_Configuration_Window_Global",
+            "isCheckable": true,
+            "isChecked": false,
+            "text": "Configuration window"
+        },
+        {
+            "id": "actionShow_Search_Window_Global",
+            "isCheckable": true,
+            "isChecked": false,
+            "text": "Search window"
+        },
+        {
+            "id": "actionShow_SkyView_Window_Global",
+            "isCheckable": true,
+            "isChecked": false,
+            "text": "Sky and viewing options window"
+        },
+        {
+            "id": "actionShow_DateTime_Window_Global",
+            "isCheckable": true,
+            "isChecked": false,
+            "text": "Date/time window"
+        },
+        {
+            "id": "actionShow_Location_Window_Global",
+            "isCheckable": true,
+            "isChecked": false,
+            "text": "Location window"
+        },
+        {
+            "id": "actionShow_Shortcuts_Window_Global",
+            "isCheckable": true,
+            "isChecked": false,
+            "text": "Shortcuts window"
+        },
+        {
+            "id": "actionShow_AstroCalc_Window_Global",
+            "isCheckable": true,
+            "isChecked": false,
+            "text": "Astronomical calculations window"
+        },
+        {
+            "id": "actionShow_Bookmarks_Window_Global",
+            "isCheckable": true,
+            "isChecked": false,
+            "text": "Bookmarks"
+        }
+    ]
+}
