@@ -23,8 +23,8 @@ export default class App {
 		// spawn controls
 		this.controls = new Controls(this, {
 			transform: { local: {
-				position: { y: 0.6, z: -2 },
-				rotation: MRE.Quaternion.FromEulerAngles(Math.PI / 4, Math.PI, 0),
+				position: { y: 0.3, z: 2 },
+				rotation: MRE.Quaternion.FromEulerAngles(Math.PI / 4, 0, 0),
 				scale: { x: 0.7, y: 0.7, z: 0.7 }
 			}}
 		});
@@ -47,10 +47,10 @@ export default class App {
 			place: this.controls.location,
 			time: this.controls.time,
 			outName: this.context.sessionId,
-			lightPollution: 2,
-			planetLabels: true,
-			starLabels: true,
-			constellationLines: true
+			lightPollution: this.controls.lightPollution,
+			planetLabels: this.controls.planetLabels,
+			starLabels: this.controls.starLabels,
+			constellationLines: this.controls.constellationLines
 		});
 
 		// blank out the sky before unloading
