@@ -16,6 +16,7 @@ RUN wget -q \
 
 COPY config.ini .
 COPY start.sh .
+RUN ["chmod", "+x", "./start.sh"]
 
 EXPOSE 8090/tcp
 CMD ["./start.sh"]
