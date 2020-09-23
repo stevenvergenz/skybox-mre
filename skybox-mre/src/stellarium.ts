@@ -120,7 +120,8 @@ async function _takeSkybox(opts: TakeSkyboxOptions) {
 
 async function takeScreenshot(outName: string): Promise<string> {
 	await runStelAction("actionSave_Screenshot_Global");
-
+	await sleep(100); // give it a little more time
+	
 	const outfile = resolve(stelOutdir, outName + '.png');
 	await rename(resolve(stelOutdir, 'stellarium-000.png'), outfile);
 	return `skies/${outName}.png`;
