@@ -20,4 +20,5 @@ RUN ["npm", "install", "--production"]
 COPY --from=compile-image /opt/mre/built ./built/
 COPY public ./public/
 
+EXPOSE 3901/tcp
 CMD ["npm", "start"]
