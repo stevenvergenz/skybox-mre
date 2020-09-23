@@ -29,7 +29,7 @@ export type CubeFace
 export type Cube = { [face: string]: string };
 
 const stelUrl = process.env.STEL_URL ?? 'http://localhost:8090';
-const stelOutdir = process.env.STEL_OUTDIR ?? resolve(__dirname, "./screenshots");
+const stelOutdir = process.env.STEL_OUTDIR ?? resolve(__dirname, "../screenshots");
 let stelReady: Promise<Cube> = setup();
 
 async function setup() {
