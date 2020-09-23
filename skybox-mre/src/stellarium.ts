@@ -1,7 +1,8 @@
 import { resolve } from 'path';
-import { rename as cbRename } from 'fs';
+import { rename as cbRename, readdir as cbReaddir } from 'fs';
 import { promisify } from 'util';
-const rename = promisify(cbRename);
+const rename = promisify(cbRename),
+	readdir = promisify(cbReaddir);
 import julian from 'julian';
 import fetch from 'node-fetch';
 
@@ -120,10 +121,18 @@ async function _takeSkybox(opts: TakeSkyboxOptions) {
 
 async function takeScreenshot(outName: string): Promise<string> {
 	await runStelAction("actionSave_Screenshot_Global");
-	await sleep(100); // give it a little more time
-	
+
 	const outfile = resolve(stelOutdir, outName + '.png');
-	await rename(resolve(stelOutdir, 'stellarium-000.png'), outfile);
+	while(1) {
+		try {
+			await rename(resolve(stelOutdir, 'stellarium-000.png'), outfile);
+			break;
+		} catch {
+			const files = await readdir(stelOutdir);
+			console.warn('stellarium-000.png not found! Files are:', files);
+		}
+	}
+	
 	return `skies/${outName}.png`;
 	
 	/*await sleep(700);
@@ -131,8 +140,8 @@ async function takeScreenshot(outName: string): Promise<string> {
 }
 
 async function disableUI() {
-	await setStelProperty("NebulaMgr.labelsAmount", 0);
-	await setStelProperty("SolarSystem.labelsDisplayed", false);
+	// await setStelProperty("NebulaMgr.labelsAmount", 0);
+	// await setStelProperty("SolarSystem.labelsDisplayed", false);
 	await setStelProperty("actionToggle_GuiHidden_Global", false);
 }
 
