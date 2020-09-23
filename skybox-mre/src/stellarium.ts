@@ -130,6 +130,7 @@ async function takeScreenshot(outName: string): Promise<string> {
 		} catch {
 			const files = await readdir(stelOutdir);
 			console.warn('stellarium-000.png not found! Files are:', files);
+			await sleep(5000);
 		}
 	}
 	
