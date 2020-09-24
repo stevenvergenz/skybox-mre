@@ -32,6 +32,10 @@ const stelUrl = process.env.STEL_URL ?? 'http://localhost:8090';
 const stelOutdir = process.env.STEL_OUTDIR ?? resolve(__dirname, "../screenshots");
 let stelReady: Promise<Cube> = setup();
 
+readdir(stelOutdir).then(files => {
+	console.log(`Contents of ${stelOutdir}:`, files);
+});
+
 async function setup() {
 	// give it some time to finish booting
 	// await sleep(10000);
@@ -123,14 +127,19 @@ async function takeScreenshot(outName: string): Promise<string> {
 	await runStelAction("actionSave_Screenshot_Global");
 
 	const outfile = resolve(stelOutdir, outName + '.png');
-	while(1) {
+	let attempts = 0;
+	while (1) {
 		try {
+			attempts++;
 			await rename(resolve(stelOutdir, 'stellarium-000.png'), outfile);
 			break;
-		} catch {
+		} catch (err) {
 			const files = await readdir(stelOutdir);
 			console.warn('stellarium-000.png not found! Files are:', files);
-			await sleep(5000);
+			if (attempts < 5)
+				await sleep(5000);
+			else
+				throw err;
 		}
 	}
 	
