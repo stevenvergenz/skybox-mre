@@ -17,6 +17,7 @@ services:
       driver: "json-file"
       options:
         max-size: "20m"
+        max-file: 10
         compress: "true"
     depends_on:
       - "stellarium"
@@ -32,6 +33,7 @@ services:
       driver: "json-file"
       options:
         max-size: "20m"
+        max-file: 10
         compress: "true"
     volumes:
       - screenshots:/root/screenshots
