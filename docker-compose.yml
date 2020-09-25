@@ -12,10 +12,7 @@ services:
       STEL_OUTDIR: /screenshots/
     networks:
       - internal
-    deploy:
-      restart_policy:
-        condition: unless-stopped
-        max_attempts: 10
+    restart: unless-stopped
     logging:
       driver: "json-file"
       options:
@@ -30,10 +27,7 @@ services:
       - "8090/tcp"
     networks:
       - internal
-    deploy:
-      restart_policy:
-        condition: unless-stopped
-        max_attempts: 10
+    restart: unless-stopped
     logging:
       driver: "json-file"
       options:
