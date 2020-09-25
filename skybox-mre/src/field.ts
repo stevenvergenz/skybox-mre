@@ -63,8 +63,16 @@ export class Field {
 		}
 	}
 
-	private get assets() { return Field.Assets[this.app.context.sessionId]; }
-	private set assets(value) { Field.Assets[this.app.context.sessionId] = value; }
+	private get assets() {
+		if (!Field.Assets[this.app.context.sessionId]) {
+			Field.Assets[this.app.context.sessionId] = new MRE.AssetContainer(this.app.context);
+			this.app.context.onStopped(() => {
+				Field.Assets[this.app.context.sessionId].unload();
+				Field.Assets[this.app.context.sessionId] = null;
+			});
+		}
+		return Field.Assets[this.app.context.sessionId];
+	}
 
 	public get root() { return this.label; }
 
@@ -121,9 +129,6 @@ export class Field {
 		}});
 
 		// generate button assets
-		if (!this.assets) {
-			this.assets = new MRE.AssetContainer(this.app.context);
-		}
 		let arrowMesh = this.assets.meshes.find(m => m.name === "arrow");
 		if (!arrowMesh) {
 			arrowMesh = this.assets.createCylinderMesh("arrow", 0.01, 0.1, "z", 3);

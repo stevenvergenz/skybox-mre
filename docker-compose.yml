@@ -12,6 +12,15 @@ services:
       STEL_OUTDIR: /screenshots/
     networks:
       - internal
+    deploy:
+      restart_policy:
+        condition: unless-stopped
+        max_attempts: 10
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "20m"
+        compress: "true"
     depends_on:
       - "stellarium"
   stellarium:
@@ -19,10 +28,17 @@ services:
       context: ./skybox-stellarium/
     expose:
       - "8090/tcp"
-    ports:
-      - "8090:8090"
     networks:
       - internal
+    deploy:
+      restart_policy:
+        condition: unless-stopped
+        max_attempts: 10
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "20m"
+        compress: "true"
     volumes:
       - screenshots:/root/screenshots
 volumes:
