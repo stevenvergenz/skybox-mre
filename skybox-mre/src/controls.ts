@@ -88,7 +88,8 @@ export default class Controls {
 			collider: { geometry: { shape: MRE.ColliderType.Box, size: { x: 1.3, y: 0.5, z: 0.01 }}},
 			transform: { local: { position: { y: -0.3 }}}
 		}});
-		apply.setBehavior(MRE.ButtonBehavior).onButton('pressed', () => {
+		apply.setBehavior(MRE.ButtonBehavior).onButton('pressed', user => {
+			if (this.app.params["modlock"] && !user.groups.has("moderator")) return;
 			this.app.refreshSky();
 		});
 	}
