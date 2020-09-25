@@ -1,0 +1,6 @@
+{
+	"name": "Skybox",
+	"author": "Steven Vergenz",
+	"license": "GPL-3.0",
+	"optionalPermissions": ["user-interaction"]
+}
