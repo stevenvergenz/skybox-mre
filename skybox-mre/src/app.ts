@@ -8,6 +8,7 @@ export default class App {
 	private skyboxAssets: MRE.AssetContainer;
 	private skyAssets: MRE.AssetContainer = null;
 	private skybox: MRE.Actor = null;
+	private spinner: MRE.Actor = null;
 
 	private controls: Controls;
 
@@ -19,6 +20,28 @@ export default class App {
 		// load static assets
 		this.staticAssets = new MRE.AssetContainer(this.context);
 		MRE.Actor.CreateFromGltf(this.staticAssets, { uri: 'compass.glb' });
+		this.spinner = MRE.Actor.CreateFromGltf(this.staticAssets, {
+			uri: 'spinner.glb',
+			actor: {
+				name: "Spinner",
+				appearance: { enabled: false },
+				transform: { local: {
+					position: { y: 100 },
+					scale: { x: 500, y: 500, z: 500 }
+				}}
+			}
+		});
+		const spinAnim = this.staticAssets.createAnimationData("spin", { tracks: [{
+			target: MRE.ActorPath("spinner").transform.local.rotation,
+			easing: MRE.AnimationEaseCurves.Linear,
+			keyframes: [
+				{ time: 0, value: new MRE.Quaternion() },
+				{ time: 3, value: MRE.Quaternion.FromEulerAngles(0, 2 * Math.PI / 3, 0) },
+				{ time: 6, value: MRE.Quaternion.FromEulerAngles(0, 4 * Math.PI / 3, 0) },
+				{ time: 9, value: MRE.Quaternion.FromEulerAngles(0, 2 * Math.PI, 0) }
+			]
+		}]});
+		spinAnim.bind({ spinner: this.spinner }, { isPlaying: true, wrapMode: MRE.AnimationWrapMode.Loop });
 
 		// spawn controls
 		this.controls = new Controls(this, {
@@ -42,6 +65,8 @@ export default class App {
 	}
 
 	public async refreshSky() {
+		this.spinner.appearance.enabled = true;
+
 		// generate the skybox textures
 		const skybox = await Stellarium.takeSkybox({
 			place: this.controls.location,
@@ -96,5 +121,7 @@ export default class App {
 				transform: { local: { position: { y: 1.5 }, scale: { x: 1000, y: 1000, z: 1000 } } }
 			}
 		});
+
+		this.spinner.appearance.enabled = false;
 	}
 }
