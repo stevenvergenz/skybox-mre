@@ -73,28 +73,11 @@ export default class App {
 				wrapV: MRE.TextureWrapMode.Clamp
 			});
 		}
-		await Promise.all(this.skyAssets.textures.map(t => t.created));
 
-		// assign generated textures to the prefab
+		// assign generated textures to the sky materials
 		for (const mat of this.skyboxAssets.materials) {
 			mat.emissiveTexture = texBox[mat.name];
 			mat.emissiveColor = MRE.Color3.White();
 		}
-
-		// needed for the material changes to propagate to the prefab before we instantiate it.
-		// ideally the actor would refer back to the prefab and take the changes too, but it doesn't.
-		await this.context.internal.nextUpdate();
-
-		// spawn the sky cubemap
-		if (this.skybox) {
-			this.skybox.destroy();
-		}
-		this.skybox = MRE.Actor.CreateFromPrefab(this.context, {
-			prefab: this.skyboxAssets.prefabs[0],
-			actor: {
-				name: "skybox",
-				transform: { local: { position: { y: 1.5 }, scale: { x: 1000, y: 1000, z: 1000 } } }
-			}
-		});
 	}
 }
