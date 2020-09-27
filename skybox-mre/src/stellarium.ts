@@ -1,7 +1,8 @@
 import { resolve } from 'path';
-import { rename as cbRename } from 'fs';
+import { rename as cbRename, readdir as cbReaddir } from 'fs';
 import { promisify } from 'util';
-const rename = promisify(cbRename);
+const rename = promisify(cbRename),
+	readdir = promisify(cbReaddir);
 import julian from 'julian';
 import fetch from 'node-fetch';
 
@@ -28,8 +29,12 @@ export type CubeFace
 export type Cube = { [face: string]: string };
 
 const stelUrl = process.env.STEL_URL ?? 'http://localhost:8090';
-const stelOutdir = process.env.STEL_OUTDIR ?? resolve(__dirname, "./screenshots");
+const stelOutdir = process.env.STEL_OUTDIR ?? resolve(__dirname, "../screenshots");
 let stelReady: Promise<Cube> = setup();
+
+readdir(stelOutdir).then(files => {
+	console.log(`Contents of ${stelOutdir}:`, files);
+});
 
 async function setup() {
 	// give it some time to finish booting
@@ -122,7 +127,22 @@ async function takeScreenshot(outName: string): Promise<string> {
 	await runStelAction("actionSave_Screenshot_Global");
 
 	const outfile = resolve(stelOutdir, outName + '.png');
-	await rename(resolve(stelOutdir, 'stellarium-000.png'), outfile);
+	let attempts = 0;
+	while (1) {
+		try {
+			attempts++;
+			await rename(resolve(stelOutdir, 'stellarium-000.png'), outfile);
+			break;
+		} catch (err) {
+			const files = await readdir(stelOutdir);
+			console.warn('stellarium-000.png not found! Files are:', files);
+			if (attempts < 5)
+				await sleep(5000);
+			else
+				throw err;
+		}
+	}
+	
 	return `skies/${outName}.png`;
 	
 	/*await sleep(700);
@@ -130,8 +150,8 @@ async function takeScreenshot(outName: string): Promise<string> {
 }
 
 async function disableUI() {
-	await setStelProperty("NebulaMgr.labelsAmount", 0);
-	await setStelProperty("SolarSystem.labelsDisplayed", false);
+	// await setStelProperty("NebulaMgr.labelsAmount", 0);
+	// await setStelProperty("SolarSystem.labelsDisplayed", false);
 	await setStelProperty("actionToggle_GuiHidden_Global", false);
 }
 

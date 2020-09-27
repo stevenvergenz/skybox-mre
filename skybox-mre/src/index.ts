@@ -8,8 +8,7 @@ process.on('uncaughtException', err => console.error(err));
 process.on('unhandledRejection', err => console.error(err));
 
 const server = new MRE.WebHost({
-	baseDir: resolve(__dirname, "../public"),
-	optionalPermissions: [MRE.Permissions.UserInteraction]
+	baseDir: resolve(__dirname, "../public")
 });
 
 setTimeout(() => {

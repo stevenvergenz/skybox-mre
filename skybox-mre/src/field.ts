@@ -37,6 +37,29 @@ export type StringFieldParams = FieldParams & {
 
 export class Field {
 	private static Assets: {[session: string]: MRE.AssetContainer} = {};
+	private static ModLockGroup: {[session: string]: MRE.GroupMask} = {};
+
+	private get assets() {
+		if (!Field.Assets[this.app.context.sessionId]) {
+			Field.Assets[this.app.context.sessionId] = new MRE.AssetContainer(this.app.context);
+			this.app.context.onStopped(() => {
+				Field.Assets[this.app.context.sessionId].unload();
+				Field.Assets[this.app.context.sessionId] = null;
+			});
+		}
+		return Field.Assets[this.app.context.sessionId];
+	}
+
+	private get modLockGroup() {
+		if (!Field.ModLockGroup[this.app.context.sessionId]) {
+			Field.ModLockGroup[this.app.context.sessionId] = new MRE.GroupMask(this.app.context,
+				this.app.params["modlock"] ? ["moderator"] : ["moderator", "default"]);
+			this.app.context.onStopped(() => {
+				Field.ModLockGroup[this.app.context.sessionId] = null;
+			});
+		}
+		return Field.ModLockGroup[this.app.context.sessionId];
+	}
 
 	private params: NumericFieldParams | StringFieldParams;
 
@@ -62,9 +85,6 @@ export class Field {
 			return this.params.prefix + this.params.options[this.numberValue] + this.params.suffix;
 		}
 	}
-
-	private get assets() { return Field.Assets[this.app.context.sessionId]; }
-	private set assets(value) { Field.Assets[this.app.context.sessionId] = value; }
 
 	public get root() { return this.label; }
 
@@ -121,9 +141,6 @@ export class Field {
 		}});
 
 		// generate button assets
-		if (!this.assets) {
-			this.assets = new MRE.AssetContainer(this.app.context);
-		}
 		let arrowMesh = this.assets.meshes.find(m => m.name === "arrow");
 		if (!arrowMesh) {
 			arrowMesh = this.assets.createCylinderMesh("arrow", 0.01, 0.1, "z", 3);
@@ -140,7 +157,7 @@ export class Field {
 		const incrActor = MRE.Actor.Create(this.app.context, { actor: {
 			name: "Increment",
 			parentId: this.label.id,
-			appearance: { meshId: arrowMesh.id, materialId: arrowMat.id },
+			appearance: { enabled: this.modLockGroup, meshId: arrowMesh.id, materialId: arrowMat.id },
 			collider: { geometry: { shape: MRE.ColliderType.Auto }},
 			transform: { local: {
 				position: { y: 0.2 },
@@ -150,7 +167,7 @@ export class Field {
 		const decrActor = MRE.Actor.Create(this.app.context, { actor: {
 			name: "Decrement",
 			parentId: this.label.id,
-			appearance: { meshId: arrowMesh.id, materialId: arrowMat.id },
+			appearance: { enabled: this.modLockGroup, meshId: arrowMesh.id, materialId: arrowMat.id },
 			collider: { geometry: { shape: MRE.ColliderType.Auto }},
 			transform: { local: { position: { y: -0.2 }}},
 		}});
@@ -160,7 +177,9 @@ export class Field {
 		this.decrementButton = decrActor.setBehavior(MRE.ButtonBehavior);
 
 		// create click handlers
-		this.incrementButton.onButton('pressed', () => {
+		this.incrementButton.onButton('pressed', user => {
+			if (this.app.params["modlock"] && !user.groups.has("moderator")) return;
+
 			if (this.params.type === "number") {
 				let newVal = this.numberValue + this.params.incrementStep;
 				if (this.params.wrap && newVal > this.params.maxValue) {
@@ -176,7 +195,9 @@ export class Field {
 				this.numberValue = Math.max(0, Math.min(this.params.options.length - 1, newVal));
 			}
 		});
-		this.decrementButton.onButton('pressed', () => {
+		this.decrementButton.onButton('pressed', user => {
+			if (this.app.params["modlock"] && !user.groups.has("moderator")) return;
+			
 			if (this.params.type === "number") {
 				let newVal = this.numberValue - this.params.decrementStep;
 				if (this.params.wrap && newVal < this.params.minValue) {
