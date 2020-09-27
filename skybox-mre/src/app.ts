@@ -7,6 +7,7 @@ export default class App {
 	private staticAssets: MRE.AssetContainer;
 	private skyboxAssets: MRE.AssetContainer;
 	private skyAssets: MRE.AssetContainer = null;
+	private skybox: MRE.Actor = null;
 	private spinner: MRE.Actor = null;
 
 	private controls: Controls;
@@ -51,10 +52,10 @@ export default class App {
 			}}
 		});
 
-		// spawn sky
+		// spawn placeholder sky
 		this.skyboxAssets = new MRE.AssetContainer(this.context);
 		await this.skyboxAssets.loadGltf('cubemap.glb');
-		MRE.Actor.CreateFromPrefab(this.context, {
+		this.skybox = MRE.Actor.CreateFromPrefab(this.context, {
 			prefab: this.skyboxAssets.prefabs[0],
 			actor: {
 				name: "skybox",
@@ -100,11 +101,27 @@ export default class App {
 		}
 		await Promise.all(this.skyAssets.textures.map(t => t.created));
 
-		// assign generated textures to the sky materials
+		// assign generated textures to the prefab
 		for (const mat of this.skyboxAssets.materials) {
 			mat.emissiveTexture = texBox[mat.name];
 			mat.emissiveColor = MRE.Color3.White();
 		}
+
+		// needed for the material changes to propagate to the prefab before we instantiate it.
+		// ideally the actor would refer back to the prefab and take the changes too, but it doesn't.
+		await this.context.internal.nextUpdate();
+
+		// spawn the sky cubemap
+		if (this.skybox) {
+			this.skybox.destroy();
+		}
+		this.skybox = MRE.Actor.CreateFromPrefab(this.context, {
+			prefab: this.skyboxAssets.prefabs[0],
+			actor: {
+				name: "skybox",
+				transform: { local: { position: { y: 1.5 }, scale: { x: 1000, y: 1000, z: 1000 } } }
+			}
+		});
 
 		// hide loading bar
 		this.spinner.appearance.enabled = false;
