@@ -2,44 +2,18 @@ import * as MRE from '@microsoft/mixed-reality-extension-sdk';
 import App from './app';
 import Controls from './controls';
 
-function pad(value: number, digits: number) {
-	const sign = value < 0 ? "-" : "";
-	let str = Math.round(Math.abs(value)).toString(10);
-	while (str.length < digits) {
-		str = '0' + str;
-	}
-	return sign + str;
-}
-
-type FieldParams = {
+export type FieldParams = {
 	initialValue: number;
 	prefix: string;
 	suffix: string;
 	wrap: boolean;
 };
 
-export type NumberFieldValueChangedCallback = (oldVal: number, newVal: number) => void;
-export type NumericFieldParams = FieldParams & {
-	type: "number";
-	minValue: number;
-	maxValue: number;
-	incrementStep: number;
-	decrementStep: number;
-	digits: number;
-	forceSign: boolean;
-}
+export abstract class Field {
+	protected static Assets: {[session: string]: MRE.AssetContainer} = {};
+	protected static ModLockGroup: {[session: string]: MRE.GroupMask} = {};
 
-export type StringFieldValueChangedCallback = (oldVal: string, newVal: string) => void;
-export type StringFieldParams = FieldParams & {
-	type: "string";
-	options: string[];
-}
-
-export class Field {
-	private static Assets: {[session: string]: MRE.AssetContainer} = {};
-	private static ModLockGroup: {[session: string]: MRE.GroupMask} = {};
-
-	private get assets() {
+	protected get assets() {
 		if (!Field.Assets[this.app.context.sessionId]) {
 			Field.Assets[this.app.context.sessionId] = new MRE.AssetContainer(this.app.context);
 			this.app.context.onStopped(() => {
@@ -50,7 +24,7 @@ export class Field {
 		return Field.Assets[this.app.context.sessionId];
 	}
 
-	private get modLockGroup() {
+	protected get modLockGroup() {
 		if (!Field.ModLockGroup[this.app.context.sessionId]) {
 			Field.ModLockGroup[this.app.context.sessionId] = new MRE.GroupMask(this.app.context,
 				this.app.params["modlock"] ? ["moderator"] : ["moderator", "default"]);
@@ -61,79 +35,41 @@ export class Field {
 		return Field.ModLockGroup[this.app.context.sessionId];
 	}
 
-	private params: NumericFieldParams | StringFieldParams;
+	private _value: number;
+	public get value() {
+		return this._value;
+	}
+	public set value(val: number) {
+		this._value = val;
+		if (this.root) {
+			this.root.text.contents = this.getLabelText();
+		}
+	}
+
+	private _root: MRE.Actor;
+	public get root() { return this._root; }
 
 	private incrementButton: MRE.ButtonBehavior;
 	private decrementButton: MRE.ButtonBehavior;
-	private label: MRE.Actor;
 
-	private _numberValue: number;
-	public get numberValue() { return this._numberValue; }
-	public set numberValue(newVal: number) {
-		this._numberValue = newVal;
-		if (this.label) {
-			this.label.text.contents = this.stringValue;
-		}
-	}
+	protected basicParams: FieldParams;
 
-	public get stringValue() {
-		if (this.params.type === "number") {
-			const sign = (this.params.forceSign && this.numberValue >= 0) ? "+" : "";
-			return this.params.prefix + sign + pad(this.numberValue, this.params.digits) + this.params.suffix;
-		}
-		else if (this.params.type === "string") {
-			return this.params.prefix + this.params.options[this.numberValue] + this.params.suffix;
-		}
-	}
+	protected constructor(protected app: App, params: Partial<FieldParams>, actorProps: Partial<MRE.ActorLike>) {
+		this.basicParams = {
+			initialValue: 0,
+			prefix: "",
+			suffix: "",
+			wrap: false,
+			...params
+		};
 
-	public get root() { return this.label; }
-
-	public constructor(
-		private app: App,
-		params: Partial<NumericFieldParams | StringFieldParams>,
-		actorProps: Partial<MRE.ActorLike>
-	) {
-		// initialize parameters
-		if (params.type === "number") {
-			this.params = {
-				type: "number",
-				minValue: 0,
-				maxValue: 100,
-				initialValue: 0,
-				incrementStep: 1,
-				decrementStep: 1,
-				digits: 0,
-				forceSign: false,
-				prefix: "",
-				suffix: "",
-				wrap: false,
-				...params
-			};
-			this.numberValue = this.params.initialValue;
-			this.params.incrementStep = Math.abs(this.params.incrementStep);
-			this.params.decrementStep = Math.abs(this.params.decrementStep);
-		}
-		else if (params.type === "string") {
-			this.params = {
-				type: "string",
-				options: ["A", "B", "C"],
-				initialValue: 0,
-				prefix: "",
-				suffix: "",
-				wrap: false,
-				...params
-			};
-			this.numberValue = this.params.initialValue;
-		}
-		else {
-			throw new Error("Invalid field params");
-		}
+		this.value = this.basicParams.initialValue;
 
 		// create label
-		this.label = MRE.Actor.Create(this.app.context, { actor: {
+		this._root = MRE.Actor.Create(this.app.context, { actor: {
 			...actorProps,
 			text: {
-				contents: this.stringValue,
+				contents: this.getLabelText(),
 				height: 0.2,
 				color: Controls.ControlColor,
 				anchor: MRE.TextAnchorLocation.MiddleCenter
@@ -156,7 +92,7 @@ export class Field {
 		// create button actors
 		const incrActor = MRE.Actor.Create(this.app.context, { actor: {
 			name: "Increment",
-			parentId: this.label.id,
+			parentId: this.root.id,
 			appearance: { enabled: this.modLockGroup, meshId: arrowMesh.id, materialId: arrowMat.id },
 			collider: { geometry: { shape: MRE.ColliderType.Auto }},
 			transform: { local: {
@@ -166,7 +102,7 @@ export class Field {
 		}});
 		const decrActor = MRE.Actor.Create(this.app.context, { actor: {
 			name: "Decrement",
-			parentId: this.label.id,
+			parentId: this.root.id,
 			appearance: { enabled: this.modLockGroup, meshId: arrowMesh.id, materialId: arrowMat.id },
 			collider: { geometry: { shape: MRE.ColliderType.Auto }},
 			transform: { local: { position: { y: -0.2 }}},
@@ -180,38 +116,16 @@ export class Field {
 		this.incrementButton.onButton('pressed', user => {
 			if (this.app.params["modlock"] && !user.groups.has("moderator")) return;
 
-			if (this.params.type === "number") {
-				let newVal = this.numberValue + this.params.incrementStep;
-				if (this.params.wrap && newVal > this.params.maxValue) {
-					newVal = this.params.minValue;
-				}
-				this.numberValue = Math.max(this.params.minValue, Math.min(this.params.maxValue, newVal));
-			}
-			else if (this.params.type === "string") {
-				let newVal = this.numberValue + 1;
-				if (this.params.wrap && newVal > this.params.options.length - 1) {
-					newVal = 0;
-				}
-				this.numberValue = Math.max(0, Math.min(this.params.options.length - 1, newVal));
-			}
+			this.incrementValue(1);
 		});
 		this.decrementButton.onButton('pressed', user => {
 			if (this.app.params["modlock"] && !user.groups.has("moderator")) return;
 			
-			if (this.params.type === "number") {
-				let newVal = this.numberValue - this.params.decrementStep;
-				if (this.params.wrap && newVal < this.params.minValue) {
-					newVal = this.params.maxValue;
-				}
-				this.numberValue = Math.max(this.params.minValue, Math.min(this.params.maxValue, newVal));
-			}
-			else if (this.params.type === "string") {
-				let newVal = this.numberValue - 1;
-				if (this.params.wrap && newVal < 0) {
-					newVal = this.params.options.length - 1;
-				}
-				this.numberValue = Math.max(0, Math.min(this.params.options.length - 1, newVal));
-			}
+			this.incrementValue(-1);
 		});
 	}
+
+	public abstract getLabelText(): string;
+
+	protected abstract incrementValue(direction: number): void;
 }

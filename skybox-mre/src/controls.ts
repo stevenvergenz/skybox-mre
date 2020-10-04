@@ -1,7 +1,8 @@
 import * as MRE from '@microsoft/mixed-reality-extension-sdk';
 import App from './app';
 import { Location } from './stellarium';
-import { Field } from './field';
+import { NumericField } from './numericField';
+import { StringField } from './stringField';
 
 function sum(total: number, value: number) {
 	return total + value;
@@ -10,54 +11,57 @@ function sum(total: number, value: number) {
 export default class Controls {
 	public static ControlColor: MRE.Color3Like = { r: 0.5, g: 0, b: 0 };
 
-	private latMagField: Field;
-	private latDirField: Field;
-	private longMagField: Field;
-	private longDirField: Field;
-	private altitudeField: Field;
+	private latMagField: NumericField;
+	private latDirField: StringField;
+	private longMagField: NumericField;
+	private longDirField: StringField;
+	private altitudeField: NumericField;
 
-	private yearField: Field;
-	private monthField: Field;
-	private dayField: Field;
-	private hourField: Field;
-	private tzField: Field;
+	private yearField: NumericField;
+	private monthField: NumericField;
+	private dayField: NumericField;
+	private hourField: NumericField;
+	private tzField: NumericField;
 
-	private lightPollutionField: Field;
-	private planetLabelsField: Field;
-	private starLabelsField: Field;
-	private constellationLinesField: Field;
+	private lightPollutionField: NumericField;
+	private planetLabelsField: StringField;
+	private starLabelsField: StringField;
+	private constellationLinesField: StringField;
 
 	private _root: MRE.Actor;
 	public get root() { return this._root; }
 
 	public get location() {
 		return {
-			latitude: this.latMagField.numberValue * (this.latDirField.numberValue === 0 ? 1 : -1),
-			longitude: this.longMagField.numberValue * (this.longDirField.numberValue === 1 ? 1 : -1),
-			altitude: this.altitudeField.numberValue
+			latitude: this.latMagField.value * (this.latDirField.value === 0 ? 1 : -1),
+			longitude: this.longMagField.value * (this.longDirField.value === 1 ? 1 : -1),
+			altitude: this.altitudeField.value
 		} as Location;
 	}
 
 	public get time() {
-		const year = this.yearField.stringValue, month = this.monthField.stringValue, day = this.dayField.stringValue,
-			time = this.hourField.stringValue, tz = this.tzField.stringValue;
+		const year = this.yearField.getLabelText(),
+			month = this.monthField.getLabelText(),
+			day = this.dayField.getLabelText(),
+			time = this.hourField.getLabelText(),
+			tz = this.tzField.getLabelText();
 		return new Date(`${year}${month}${day}T${time}${tz}`);
 	}
 
 	public get lightPollution() {
-		return this.lightPollutionField.numberValue;
+		return this.lightPollutionField.value;
 	}
 
 	public get planetLabels() {
-		return this.planetLabelsField.numberValue === 1;
+		return this.planetLabelsField.value === 1;
 	}
 
 	public get starLabels() {
-		return this.starLabelsField.numberValue === 1;
+		return this.starLabelsField.value === 1;
 	}
 
 	public get constellationLines() {
-		return this.constellationLinesField.numberValue === 1;
+		return this.constellationLinesField.value === 1;
 	}
 
 	public constructor(private app: App, actorInit: Partial<MRE.ActorLike>) {
@@ -115,22 +119,22 @@ export default class Controls {
 		}});
 
 		// generate location fields
-		this.latMagField = new Field(this.app,
-			{ type: "number", maxValue: 90, initialValue: 45, incrementStep: 5, decrementStep: 5, suffix: "\u00b0" },
+		this.latMagField = new NumericField(this.app,
+			{ maxValue: 90, initialValue: 45, incrementStep: 5, suffix: "\u00b0" },
 			{ name: "LatitudeMagnitude", parentId: locationRoot.id });
-		this.latDirField = new Field(this.app,
-			{ type: "string", options: ["N", "S"], initialValue: 0, suffix: ",", wrap: true },
+		this.latDirField = new StringField(this.app,
+			{ options: ["N", "S"], initialValue: 0, suffix: ",", wrap: true },
 			{ name: "LatitudeDirection", parentId: locationRoot.id });
 
-		this.longMagField = new Field(this.app,
-			{ type: "number", maxValue: 180, initialValue: 90, incrementStep: 5, decrementStep: 5, suffix: "\u00b0"},
+		this.longMagField = new NumericField(this.app,
+			{ maxValue: 180, initialValue: 90, incrementStep: 5, suffix: "\u00b0"},
 			{ name: "LongitudeMagnitude", parentId: locationRoot.id });
-		this.longDirField = new Field(this.app,
-			{ type: "string", options: ["W", "E"], initialValue: 0, suffix: ",", wrap: true },
+		this.longDirField = new StringField(this.app,
+			{ options: ["W", "E"], initialValue: 0, suffix: ",", wrap: true },
 			{ name: "LongitudeDirection", parentId: locationRoot.id });
 
-		this.altitudeField = new Field(this.app,
-			{ type: "number", maxValue: 1000, initialValue: 20, incrementStep: 5, decrementStep: 5, suffix: "m" },
+		this.altitudeField = new NumericField(this.app,
+			{ maxValue: 1000, initialValue: 20, incrementStep: 5, suffix: "m" },
 			{ name: "Altitude", parentId: locationRoot.id });
 
 		// lay out the location fields
@@ -200,22 +204,20 @@ export default class Controls {
 
 		// generate time fields
 		const curTime = new Date();
-		this.yearField = new Field(this.app,
-			{ type: "number", maxValue: 4000, initialValue: curTime.getUTCFullYear(), digits: 4, suffix: "-" },
+		this.yearField = new NumericField(this.app,
+			{ maxValue: 4000, initialValue: curTime.getUTCFullYear(), digits: 4, suffix: "-" },
 			{ name: "Year", parentId: timeRoot.id });
-		this.monthField = new Field(this.app,
-			{ type: "number", minValue: 1, maxValue: 12, initialValue: curTime.getUTCMonth() + 1, digits: 2, suffix: "-",
-				wrap: true },
+		this.monthField = new NumericField(this.app,
+			{ minValue: 1, maxValue: 12, initialValue: curTime.getUTCMonth() + 1, digits: 2, suffix: "-", wrap: true },
 			{ name: "Month", parentId: timeRoot.id });
-		this.dayField = new Field(this.app,
-			{ type: "number", minValue: 1, maxValue: 31, initialValue: curTime.getUTCDate(), digits: 2, wrap: true },
+		this.dayField = new NumericField(this.app,
+			{ minValue: 1, maxValue: 31, initialValue: curTime.getUTCDate(), digits: 2, wrap: true },
 			{ name: "Day", parentId: timeRoot.id });
-		this.hourField = new Field(this.app,
-			{ type: "number", maxValue: 23, initialValue: curTime.getUTCHours(), digits: 2, suffix: ":00", wrap: true },
+		this.hourField = new NumericField(this.app,
+			{ maxValue: 23, initialValue: curTime.getUTCHours(), digits: 2, suffix: ":00", wrap: true },
 			{ name: "Time", parentId: timeRoot.id });
-		this.tzField = new Field(this.app,
-			{ type: "number", minValue: -1200, maxValue: 1200, incrementStep: 100, decrementStep: 100, digits: 4,
-				forceSign: true, wrap: true },
+		this.tzField = new NumericField(this.app,
+			{ minValue: -1200, maxValue: 1200, incrementStep: 100, digits: 4, forceSign: true, wrap: true },
 			{ name: "Timezone", parentId: timeRoot.id });
 
 		// lay out the time fields
@@ -273,8 +275,8 @@ export default class Controls {
 				color: Controls.ControlColor
 			}
 		}});
-		this.lightPollutionField = new Field(this.app,
-			{ type: 'number', minValue: 1, maxValue: 9, initialValue: 2 },
+		this.lightPollutionField = new NumericField(this.app,
+			{ minValue: 1, maxValue: 9, initialValue: 2 },
 			{ name: "LightPollution", parentId: this.root.id });
 
 		rootLayout.addCell({
@@ -301,8 +303,8 @@ export default class Controls {
 				color: Controls.ControlColor
 			}
 		}});
-		this.constellationLinesField = new Field(this.app,
-			{ type: 'string', options: ["false", "true"], initialValue: 0, wrap: true },
+		this.constellationLinesField = new StringField(this.app,
+			{ options: ["false", "true"], wrap: true },
 			{ name: "ConstellationField", parentId: this.root.id });
 
 		rootLayout.addCell({
@@ -329,8 +331,8 @@ export default class Controls {
 				color: Controls.ControlColor
 			}
 		}});
-		this.planetLabelsField = new Field(this.app,
-			{ type: 'string', options: ["false", "true"], initialValue: 0, wrap: true },
+		this.planetLabelsField = new StringField(this.app,
+			{ options: ["false", "true"], wrap: true },
 			{ name: "PlanetLabels", parentId: this.root.id });
 
 		rootLayout.addCell({
@@ -357,8 +359,8 @@ export default class Controls {
 				color: Controls.ControlColor
 			}
 		}});
-		this.starLabelsField = new Field(this.app,
-			{ type: 'string', options: ["false", "true"], initialValue: 0, wrap: true },
+		this.starLabelsField = new StringField(this.app,
+			{ options: ["false", "true"], wrap: true },
 			{ name: "StarLabels", parentId: this.root.id });
 
 		rootLayout.addCell({
