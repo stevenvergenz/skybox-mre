@@ -41,9 +41,7 @@ export abstract class Field {
 	}
 	public set value(val: number) {
 		this._value = val;
-		if (this.root) {
-			this.root.text.contents = this.getLabelText();
-		}
+		this.updateLabel();
 	}
 
 	private _root: MRE.Actor;
@@ -69,7 +67,7 @@ export abstract class Field {
 		this._root = MRE.Actor.Create(this.app.context, { actor: {
 			...actorProps,
 			text: {
-				contents: this.getLabelText(),
+				contents: this.updateLabel(),
 				height: 0.2,
 				color: Controls.ControlColor,
 				anchor: MRE.TextAnchorLocation.MiddleCenter
@@ -125,7 +123,8 @@ export abstract class Field {
 		});
 	}
 
-	public abstract getLabelText(): string;
+	/** Update the label text and return the new text */
+	public abstract updateLabel(): string;
 
 	protected abstract incrementValue(direction: number): void;
 }

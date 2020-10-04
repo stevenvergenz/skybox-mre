@@ -34,9 +34,14 @@ export class NumericField extends Field {
 		this.params.incrementStep = Math.abs(this.params.incrementStep);
 	}
 
-	public getLabelText() {
+	public updateLabel() {
 		const sign = (this.params.forceSign && this.value >= 0) ? "+" : "";
-		return this.params.prefix + sign + pad(this.value, this.params.digits) + this.params.suffix;
+		const str = this.params.prefix + sign + pad(this.value, this.params.digits) + this.params.suffix;
+		
+		if (this.root) {
+			this.root.text.contents = str;
+		}
+		return str;
 	}
 
 	protected incrementValue(direction: number) {

@@ -40,11 +40,11 @@ export default class Controls {
 	}
 
 	public get time() {
-		const year = this.yearField.getLabelText(),
-			month = this.monthField.getLabelText(),
-			day = this.dayField.getLabelText(),
-			time = this.hourField.getLabelText(),
-			tz = this.tzField.getLabelText();
+		const year = this.yearField.updateLabel(),
+			month = this.monthField.updateLabel(),
+			day = this.dayField.updateLabel(),
+			time = this.hourField.updateLabel(),
+			tz = this.tzField.updateLabel();
 		return new Date(`${year}${month}${day}T${time}${tz}`);
 	}
 

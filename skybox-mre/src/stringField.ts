@@ -21,8 +21,13 @@ export class StringField extends Field {
 		};
 	}
 
-	public getLabelText() {
-		return this.params.prefix + this.params.options[this.value] + this.params.suffix;
+	public updateLabel() {
+		const str = this.params.prefix + this.params.options[this.value] + this.params.suffix;
+		
+		if (this.root) {
+			this.root.text.contents = str;
+		}
+		return str;
 	}
 
 	protected incrementValue(direction: number) {
