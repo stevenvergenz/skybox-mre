@@ -41,7 +41,10 @@ export abstract class Field {
 	}
 	public set value(val: number) {
 		this._value = val;
-		this.updateLabel();
+		const str = this.updateLabel();
+		if (this.root) {
+			this.root.text.contents = str;
+		}
 	}
 
 	private _root: MRE.Actor;

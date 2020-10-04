@@ -3,7 +3,6 @@ import * as MRE from '@microsoft/mixed-reality-extension-sdk';
 import App from './app';
 import { Field, FieldParams } from './field';
 
-export type StringFieldValueChangedCallback = (oldVal: string, newVal: string) => void;
 export type StringFieldParams = FieldParams & {
 	options: string[];
 }
@@ -22,12 +21,7 @@ export class StringField extends Field {
 	}
 
 	public updateLabel() {
-		const str = this.params.prefix + this.params.options[this.value] + this.params.suffix;
-		
-		if (this.root) {
-			this.root.text.contents = str;
-		}
-		return str;
+		return this.params.prefix + this.params.options[this.value] + this.params.suffix;
 	}
 
 	protected incrementValue(direction: number) {

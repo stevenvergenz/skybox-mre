@@ -14,6 +14,13 @@ export default class App {
 
 	public constructor(public context: MRE.Context, public params: MRE.ParameterSet) {
 		this.context.onStarted(() => this.start());
+		this.context.onUserJoined(user => this.onUserJoined(user));
+	}
+
+	private onUserJoined(user: MRE.User) {
+		if (/\b(moderator|eventowner)\b/.test(user.properties['altspacevr-roles'])) {
+			user.groups.add('moderator');
+		}
 	}
 
 	private async start() {

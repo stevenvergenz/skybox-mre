@@ -5,7 +5,6 @@ import { Field, FieldParams } from './field';
 import Controls from './controls';
 import { pad } from './utils';
 
-export type NumberFieldValueChangedCallback = (oldVal: number, newVal: number) => void;
 export type NumericFieldParams = FieldParams & {
 	minValue: number;
 	maxValue: number;
@@ -36,12 +35,7 @@ export class NumericField extends Field {
 
 	public updateLabel() {
 		const sign = (this.params.forceSign && this.value >= 0) ? "+" : "";
-		const str = this.params.prefix + sign + pad(this.value, this.params.digits) + this.params.suffix;
-		
-		if (this.root) {
-			this.root.text.contents = str;
-		}
-		return str;
+		return this.params.prefix + sign + pad(this.value, this.params.digits) + this.params.suffix;
 	}
 
 	protected incrementValue(direction: number) {
