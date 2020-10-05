@@ -11,6 +11,7 @@ export type FieldParams = {
 
 export abstract class Field {
 	protected static Assets: {[session: string]: MRE.AssetContainer} = {};
+	protected static AssetsReady: {[session: string]: Promise<MRE.Asset[]>} = {};
 	protected static ModLockGroup: {[session: string]: MRE.GroupMask} = {};
 
 	protected get assets() {
@@ -18,10 +19,20 @@ export abstract class Field {
 			Field.Assets[this.app.context.sessionId] = new MRE.AssetContainer(this.app.context);
 			this.app.context.onStopped(() => {
 				Field.Assets[this.app.context.sessionId].unload();
-				Field.Assets[this.app.context.sessionId] = null;
+				delete Field.Assets[this.app.context.sessionId];
 			});
 		}
 		return Field.Assets[this.app.context.sessionId];
+	}
+
+	protected get assetsReady() {
+		if (!Field.AssetsReady[this.app.context.sessionId]) {
+			Field.AssetsReady[this.app.context.sessionId] = this.assets.loadGltf('icons.glb');
+			this.app.context.onStopped(() => {
+				delete Field.AssetsReady[this.app.context.sessionId];
+			});
+		}
+		return Field.AssetsReady[this.app.context.sessionId];
 	}
 
 	protected get modLockGroup() {
@@ -29,7 +40,7 @@ export abstract class Field {
 			Field.ModLockGroup[this.app.context.sessionId] = new MRE.GroupMask(this.app.context,
 				this.app.params["modlock"] ? ["moderator"] : ["moderator", "default"]);
 			this.app.context.onStopped(() => {
-				Field.ModLockGroup[this.app.context.sessionId] = null;
+				delete Field.ModLockGroup[this.app.context.sessionId];
 			});
 		}
 		return Field.ModLockGroup[this.app.context.sessionId];
@@ -50,8 +61,8 @@ export abstract class Field {
 	private _root: MRE.Actor;
 	public get root() { return this._root; }
 
-	private incrementButton: MRE.ButtonBehavior;
-	private decrementButton: MRE.ButtonBehavior;
+	protected incrementActor: MRE.Actor;
+	protected decrementActor: MRE.Actor;
 
 	protected basicParams: FieldParams;
 
@@ -77,6 +88,10 @@ export abstract class Field {
 			}
 		}});
 
+		this.assetsReady.then(a => this.initWithAssets(a)).catch(e => MRE.log.error('app', e));
+	}
+
+	private async initWithAssets(assets: MRE.Asset[]) {
 		// generate button assets
 		let arrowMesh = this.assets.meshes.find(m => m.name === "arrow");
 		if (!arrowMesh) {
@@ -91,7 +106,7 @@ export abstract class Field {
 		}
 
 		// create button actors
-		const incrActor = MRE.Actor.Create(this.app.context, { actor: {
+		this.incrementActor = MRE.Actor.Create(this.app.context, { actor: {
 			name: "Increment",
 			parentId: this.root.id,
 			appearance: { enabled: this.modLockGroup, meshId: arrowMesh.id, materialId: arrowMat.id },
@@ -101,7 +116,7 @@ export abstract class Field {
 				rotation: MRE.Quaternion.FromEulerAngles(0, 0, Math.PI / 3)
 			}},
 		}});
-		const decrActor = MRE.Actor.Create(this.app.context, { actor: {
+		this.decrementActor = MRE.Actor.Create(this.app.context, { actor: {
 			name: "Decrement",
 			parentId: this.root.id,
 			appearance: { enabled: this.modLockGroup, meshId: arrowMesh.id, materialId: arrowMat.id },
@@ -109,19 +124,15 @@ export abstract class Field {
 			transform: { local: { position: { y: -0.2 }}},
 		}});
 
-		// create button behaviors
-		this.incrementButton = incrActor.setBehavior(MRE.ButtonBehavior);
-		this.decrementButton = decrActor.setBehavior(MRE.ButtonBehavior);
-
 		// create click handlers
-		this.incrementButton.onButton('pressed', user => {
+		this.incrementActor.setBehavior(MRE.ButtonBehavior)
+		.onButton('pressed', user => {
 			if (this.app.params["modlock"] && !user.groups.has("moderator")) return;
-
 			this.incrementValue(1);
 		});
-		this.decrementButton.onButton('pressed', user => {
+		this.decrementActor.setBehavior(MRE.ButtonBehavior)
+		.onButton('pressed', user => {
 			if (this.app.params["modlock"] && !user.groups.has("moderator")) return;
-			
 			this.incrementValue(-1);
 		});
 	}
