@@ -72,7 +72,7 @@ export default class App {
 		const skybox = await Stellarium.takeSkybox({
 			place: this.controls.location,
 			time: this.controls.time,
-			outName: this.context.sessionId,
+			outName: encodeURIComponent(this.context.sessionId),
 			lightPollution: this.controls.lightPollution,
 			planetLabels: this.controls.planetLabels,
 			starLabels: this.controls.starLabels,
